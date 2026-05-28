@@ -2,6 +2,28 @@
 
 ## 2026-05-28
 
+### App 路由拆分
+
+- 新增 `src/app/routes.ts` 管理 Route 和来源类型
+- 新增 `src/app/navigation.ts` 管理打开动态、打开毛孩主页和来源返回逻辑
+- 新增 `src/app/useAppState.ts` 管理 localStorage 状态读写
+- 新增 `src/app/AppRouter.tsx` 承接页面路由分支
+- `src/App.tsx` 收敛为应用壳、底部导航、添加面板和加新提示
+
+影响页面：
+
+- 首页
+- 动态详情
+- 毛孩主页
+- 图鉴
+- 添加入口
+
+破坏性变更：
+
+- 无。该改动为结构拆分，页面行为保持不变。
+
+## 2026-05-28
+
 ### 产品收口与项目验收
 
 - 修复 README 文档入口为 GitHub 可用的相对链接
