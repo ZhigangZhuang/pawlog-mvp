@@ -122,14 +122,14 @@ export function AppRouter({ state, setState, route, setRoute, activeTab, goTabs,
         state={state}
         initialType={route.type}
         onBack={() => setRoute({ name: "detail", animalId: selectedAnimal.id, source: route.source })}
-        onSave={(nextState) =>
+        onSave={(nextState, primaryAnimalId) =>
           saveAndReturnToDetail(
             withChangeLog(nextState, {
-              animal_id: selectedAnimal.id,
+              animal_id: primaryAnimalId,
               action: route.type === "photo" ? "added_photo" : route.type === "health" ? "added_health_record" : route.type === "feeding" ? "added_feeding_record" : "updated_status",
               after: { record_type: route.type || "record" },
             }),
-            selectedAnimal.id,
+            primaryAnimalId,
             route.source,
           )
         }

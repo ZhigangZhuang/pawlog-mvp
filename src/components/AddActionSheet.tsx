@@ -11,6 +11,11 @@ type AddActionSheetProps = {
 
 export function AddActionSheet({ open, onClose, onCreateRecord, onCreateAnimal, onImportPhotos }: AddActionSheetProps) {
   if (!open) return null;
+  const runAction = (action: () => void) => {
+    onClose();
+    action();
+  };
+
   return (
     <div className="fixed inset-0 z-40 bg-black/30" onClick={onClose}>
       <div
@@ -28,9 +33,9 @@ export function AddActionSheet({ open, onClose, onCreateRecord, onCreateAnimal, 
           </button>
         </div>
         <div className="space-y-2">
-          <Action icon={<Camera size={20} />} title="发动态" text="给某只毛孩发一条新动态" onClick={onCreateRecord} tone="green" />
-          <Action icon={<FilePlus2 size={20} />} title="新建毛孩档案" text="记录自家宠物或流浪猫狗" onClick={onCreateAnimal} tone="orange" />
-          <Action icon={<Images size={20} />} title="导入照片" text="先放进待归档照片箱" onClick={onImportPhotos} tone="gray" />
+          <Action icon={<Camera size={20} />} title="发动态" text="给某只毛孩发一条新动态" onClick={() => runAction(onCreateRecord)} tone="green" />
+          <Action icon={<FilePlus2 size={20} />} title="新建毛孩档案" text="记录自家宠物或流浪猫狗" onClick={() => runAction(onCreateAnimal)} tone="orange" />
+          <Action icon={<Images size={20} />} title="导入照片" text="先放进待归档照片箱" onClick={() => runAction(onImportPhotos)} tone="gray" />
         </div>
       </div>
     </div>
@@ -44,7 +49,7 @@ function Action({ icon, title, text, tone, onClick }: { icon: React.ReactNode; t
     gray: "bg-stone-100 text-stone-600",
   }[tone];
   return (
-    <button className="flex w-full items-center gap-3 rounded-lg bg-white p-4 text-left ring-1 ring-sand/70" onClick={onClick}>
+    <button type="button" className="flex w-full items-center gap-3 rounded-lg bg-white p-4 text-left ring-1 ring-sand/70" onClick={onClick}>
       <span className={`grid h-11 w-11 place-items-center rounded-full ${toneClass}`}>{icon}</span>
       <span>
         <span className="block font-bold">{title}</span>
