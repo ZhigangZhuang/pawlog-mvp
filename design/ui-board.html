@@ -1,0 +1,873 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>毛孩档案 UI Board</title>
+    <style>
+      :root {
+        --bg: #fbf7ef;
+        --paper: #ffffff;
+        --card: #ffffff;
+        --ink: #2e2b28;
+        --muted: #7c7168;
+        --line: #efe2d0;
+        --clay: #e97843;
+        --moss: #6a9b6b;
+        --cream: #fbf7ef;
+        --soft: 0 12px 30px rgba(73, 56, 40, 0.10);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font-family:
+          Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+          "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      }
+
+      header {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        border-bottom: 1px solid var(--line);
+        background: rgba(248, 244, 236, 0.92);
+        backdrop-filter: blur(16px);
+      }
+
+      .topbar {
+        max-width: 1360px;
+        margin: 0 auto;
+        padding: 18px 28px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+      }
+
+      .brand h1 {
+        margin: 0;
+        font-size: 24px;
+        letter-spacing: 0;
+      }
+
+      .brand p {
+        margin: 6px 0 0;
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      .version {
+        border: 1px solid var(--line);
+        background: var(--paper);
+        border-radius: 999px;
+        padding: 8px 12px;
+        color: var(--muted);
+        font-size: 13px;
+        font-weight: 700;
+        white-space: nowrap;
+      }
+
+      main {
+        max-width: 1360px;
+        margin: 0 auto;
+        padding: 28px;
+      }
+
+      .section-title {
+        margin: 34px 0 16px;
+        display: flex;
+        align-items: end;
+        justify-content: space-between;
+        gap: 16px;
+      }
+
+      .section-title h2 {
+        margin: 0;
+        font-size: 20px;
+      }
+
+      .section-title p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      .rules {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .rule {
+        border: 1px solid var(--line);
+        background: var(--paper);
+        border-radius: 14px;
+        padding: 14px;
+        min-height: 112px;
+      }
+
+      .rule strong {
+        display: block;
+        margin-bottom: 8px;
+        font-size: 14px;
+      }
+
+      .rule span {
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.6;
+      }
+
+      .tokens {
+        display: grid;
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .token {
+        border: 1px solid var(--line);
+        background: var(--paper);
+        border-radius: 14px;
+        padding: 12px;
+      }
+
+      .swatch {
+        height: 54px;
+        border-radius: 10px;
+        margin-bottom: 10px;
+        border: 1px solid rgba(0, 0, 0, 0.06);
+      }
+
+      .token b {
+        display: block;
+        font-size: 13px;
+      }
+
+      .token code {
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .boards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(318px, 1fr));
+        gap: 24px;
+        align-items: start;
+      }
+
+      .frame-wrap {
+        display: grid;
+        gap: 10px;
+      }
+
+      .frame-title {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .frame-title h3 {
+        margin: 0;
+        font-size: 16px;
+      }
+
+      .frame-title span {
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .phone {
+        width: 318px;
+        min-height: 690px;
+        border-radius: 34px;
+        background: #fbf5eb;
+        box-shadow: var(--soft);
+        border: 8px solid #241f1b;
+        overflow: hidden;
+        position: relative;
+        justify-self: center;
+      }
+
+      .screen {
+        min-height: 674px;
+        padding: 18px 14px 74px;
+      }
+
+      .appbar {
+        height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .appbar h4 {
+        margin: 0;
+        font-size: 18px;
+      }
+
+      .icon-row {
+        display: flex;
+        gap: 8px;
+      }
+
+      .icon {
+        width: 32px;
+        height: 32px;
+        display: grid;
+        place-items: center;
+        border-radius: 999px;
+        background: var(--card);
+        color: var(--muted);
+        font-weight: 900;
+      }
+
+      .feed-card,
+      .panel,
+      .animal-card,
+      .sheet-card {
+        border-radius: 18px;
+        background: var(--card);
+        border: 1px solid rgba(234, 223, 206, 0.88);
+        overflow: hidden;
+      }
+
+      .feed-card {
+        margin-bottom: 12px;
+      }
+
+      .post-head {
+        padding: 12px;
+        display: flex;
+        gap: 10px;
+        align-items: center;
+      }
+
+      .avatar {
+        width: 42px;
+        height: 42px;
+        border-radius: 999px;
+        background:
+          linear-gradient(135deg, rgba(217, 119, 69, 0.3), rgba(109, 139, 100, 0.3)),
+          url("https://images.unsplash.com/photo-1573865526739-10659fec78a5?auto=format&fit=crop&w=200&q=80");
+        background-size: cover;
+        background-position: center;
+        flex: 0 0 auto;
+      }
+
+      .meta {
+        min-width: 0;
+        flex: 1;
+      }
+
+      .meta b {
+        display: block;
+        font-size: 14px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .meta span {
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .photo {
+        aspect-ratio: 4 / 3;
+        background:
+          linear-gradient(180deg, rgba(0, 0, 0, 0.02), rgba(0, 0, 0, 0.1)),
+          url("https://images.unsplash.com/photo-1573865526739-10659fec78a5?auto=format&fit=crop&w=900&q=80");
+        background-size: cover;
+        background-position: center;
+      }
+
+      .photo.dog {
+        background-image:
+          linear-gradient(180deg, rgba(0, 0, 0, 0.02), rgba(0, 0, 0, 0.1)),
+          url("https://images.unsplash.com/photo-1548199973-03cce0bbc87b?auto=format&fit=crop&w=900&q=80");
+      }
+
+      .photo.multi {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2px;
+        background: var(--line);
+      }
+
+      .photo.multi div {
+        background-size: cover;
+        background-position: center;
+      }
+
+      .copy {
+        padding: 12px;
+      }
+
+      .copy p {
+        margin: 0 0 10px;
+        font-size: 14px;
+        line-height: 1.6;
+      }
+
+      .tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+      }
+
+      .tag {
+        border-radius: 999px;
+        background: #f2eee7;
+        color: #625950;
+        padding: 3px 8px;
+        font-size: 11px;
+        font-weight: 700;
+      }
+
+      .tabbar {
+        height: 60px;
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(255, 253, 248, 0.96);
+        border-top: 1px solid var(--line);
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        align-items: center;
+      }
+
+      .tab {
+        text-align: center;
+        color: var(--muted);
+        font-size: 11px;
+        font-weight: 800;
+      }
+
+      .tab.active {
+        color: var(--clay);
+      }
+
+      .plus {
+        width: 46px;
+        height: 46px;
+        margin: 0 auto;
+        border-radius: 999px;
+        background: var(--clay);
+        color: white;
+        display: grid;
+        place-items: center;
+        font-size: 26px;
+        line-height: 1;
+        box-shadow: 0 8px 18px rgba(217, 119, 69, 0.35);
+      }
+
+      .detail-author {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px;
+        background: var(--card);
+        border-radius: 18px 18px 0 0;
+      }
+
+      .info-block {
+        margin: 12px 0;
+        padding: 12px;
+        border-radius: 16px;
+        background: var(--cream);
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.7;
+      }
+
+      .linked-row {
+        display: flex;
+        gap: 12px;
+        padding: 10px 0 2px;
+        overflow: hidden;
+      }
+
+      .linked {
+        width: 58px;
+        text-align: center;
+        flex: 0 0 auto;
+      }
+
+      .linked .avatar {
+        margin: 0 auto 4px;
+        width: 46px;
+        height: 46px;
+      }
+
+      .linked span {
+        font-size: 11px;
+        font-weight: 800;
+      }
+
+      .profile-head {
+        text-align: center;
+        padding: 12px 8px 10px;
+      }
+
+      .profile-head .avatar {
+        margin: 0 auto;
+        width: 86px;
+        height: 86px;
+        border: 4px solid var(--paper);
+      }
+
+      .profile-head h4 {
+        margin: 10px 0 4px;
+        font-size: 22px;
+      }
+
+      .profile-head p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.6;
+      }
+
+      .tabs {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        border-bottom: 1px solid var(--line);
+        margin: 8px 0 12px;
+      }
+
+      .tabs span {
+        text-align: center;
+        padding: 9px 0;
+        color: var(--muted);
+        font-size: 13px;
+        font-weight: 900;
+      }
+
+      .tabs .active {
+        color: var(--clay);
+        border-bottom: 2px solid var(--clay);
+      }
+
+      .catalog-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+
+      .search {
+        height: 42px;
+        border-radius: 999px;
+        background: var(--card);
+        border: 1px solid var(--line);
+        padding: 0 14px;
+        display: flex;
+        align-items: center;
+        color: var(--muted);
+        font-size: 13px;
+        margin-bottom: 10px;
+      }
+
+      .animal-card img {
+        width: 100%;
+        aspect-ratio: 1;
+        display: block;
+        object-fit: cover;
+      }
+
+      .animal-card div {
+        padding: 9px;
+      }
+
+      .animal-card b {
+        display: block;
+        font-size: 13px;
+      }
+
+      .animal-card span {
+        color: var(--muted);
+        font-size: 11px;
+      }
+
+      .selector {
+        display: grid;
+        gap: 8px;
+      }
+
+      .select-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background: var(--cream);
+        border-radius: 16px;
+        padding: 8px;
+      }
+
+      .check {
+        width: 18px;
+        height: 18px;
+        border-radius: 5px;
+        border: 2px solid var(--line);
+        background: white;
+      }
+
+      .check.on {
+        background: var(--clay);
+        border-color: var(--clay);
+      }
+
+      .primary-pill {
+        margin-left: auto;
+        border-radius: 999px;
+        background: var(--clay);
+        color: white;
+        padding: 5px 8px;
+        font-size: 10px;
+        font-weight: 900;
+      }
+
+      .textarea {
+        margin-top: 10px;
+        min-height: 112px;
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 12px;
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.6;
+        background: white;
+      }
+
+      .map {
+        position: relative;
+        height: 420px;
+        border-radius: 20px;
+        background:
+          linear-gradient(90deg, rgba(255, 255, 255, 0.6) 1px, transparent 1px),
+          linear-gradient(rgba(255, 255, 255, 0.6) 1px, transparent 1px),
+          #e7efdd;
+        background-size: 74px 74px;
+        border: 1px solid var(--line);
+        overflow: hidden;
+      }
+
+      .pin {
+        position: absolute;
+        width: 46px;
+        height: 46px;
+        border-radius: 999px;
+        display: grid;
+        place-items: center;
+        background: var(--moss);
+        color: white;
+        border: 4px solid white;
+        box-shadow: var(--soft);
+      }
+
+      .pin.pet {
+        background: var(--clay);
+      }
+
+      .bottom-sheet {
+        position: absolute;
+        left: 12px;
+        right: 12px;
+        bottom: 72px;
+        border-radius: 20px;
+        background: white;
+        border: 1px solid var(--line);
+        padding: 12px;
+        box-shadow: var(--soft);
+      }
+
+      .profile-list {
+        display: grid;
+        gap: 10px;
+      }
+
+      .row {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 12px;
+      }
+
+      .row-icon {
+        width: 36px;
+        height: 36px;
+        display: grid;
+        place-items: center;
+        border-radius: 999px;
+        background: var(--cream);
+        color: var(--clay);
+      }
+
+      .row b {
+        display: block;
+        font-size: 13px;
+      }
+
+      .row span {
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      @media (max-width: 900px) {
+        .rules,
+        .tokens {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+
+      @media (max-width: 520px) {
+        .topbar,
+        main {
+          padding-left: 16px;
+          padding-right: 16px;
+        }
+
+        .rules,
+        .tokens {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="topbar">
+        <div class="brand">
+          <h1>毛孩档案 UI Board</h1>
+          <p>本地设计看板，不依赖 Figma 登录。用于固定页面结构、交互方向和视觉基准。</p>
+        </div>
+        <div class="version">v0.3 · 2026-05-28</div>
+      </div>
+    </header>
+
+    <main>
+      <section>
+        <div class="section-title">
+          <h2>产品原则</h2>
+          <p>先锁规则，再继续做功能。</p>
+        </div>
+        <div class="rules">
+          <div class="rule"><strong>首页只看动态</strong><span>首页不做搜索、分类、任务入口。任何 Feed 点击都进入动态详情。</span></div>
+          <div class="rule"><strong>Animal 是主页</strong><span>毛孩主页展示长期动态、照片、地点和档案，不做关注/订阅。</span></div>
+          <div class="rule"><strong>分享是权限</strong><span>统一使用：我的、分享给我的、允许我记录。</span></div>
+          <div class="rule"><strong>流浪动物安全优先</strong><span>位置默认模糊，不公开幼崽窝点、固定出没时间或抓捕计划。</span></div>
+        </div>
+      </section>
+
+      <section>
+        <div class="section-title">
+          <h2>Design Tokens</h2>
+          <p>温暖、干净、轻手账感，不做后台系统。</p>
+        </div>
+        <div class="tokens">
+          <div class="token"><div class="swatch" style="background:#fbf7ef"></div><b>背景</b><code>#fbf7ef</code></div>
+          <div class="token"><div class="swatch" style="background:#ffffff"></div><b>纸面</b><code>#ffffff</code></div>
+          <div class="token"><div class="swatch" style="background:#e97843"></div><b>宠物强调</b><code>#e97843</code></div>
+          <div class="token"><div class="swatch" style="background:#6a9b6b"></div><b>安全/健康</b><code>#6a9b6b</code></div>
+          <div class="token"><div class="swatch" style="background:#2e2b28"></div><b>文字</b><code>#2e2b28</code></div>
+          <div class="token"><div class="swatch" style="background:#efe2d0"></div><b>边线</b><code>#efe2d0</code></div>
+        </div>
+      </section>
+
+      <section>
+        <div class="section-title">
+          <h2>核心页面</h2>
+          <p>这些是当前版本的主流程页面。</p>
+        </div>
+
+        <div class="boards">
+          <div class="frame-wrap">
+            <div class="frame-title"><h3>首页 Feed</h3><span>只看动态</span></div>
+            <div class="phone">
+              <div class="screen">
+                <div class="appbar"><h4>毛孩动态</h4></div>
+                <article class="feed-card">
+                  <div class="post-head">
+                    <div class="avatar"></div>
+                    <div class="meta"><b>猫妈妈、小白崽、小黑崽</b><span>今天 18:30 · 公园草地附近</span></div>
+                    <div class="icon">···</div>
+                  </div>
+                  <div class="photo multi">
+                    <div style="background-image:url('https://images.unsplash.com/photo-1573865526739-10659fec78a5?auto=format&fit=crop&w=400&q=80')"></div>
+                    <div style="background-image:url('https://images.unsplash.com/photo-1495360010541-f48722b34f7d?auto=format&fit=crop&w=400&q=80')"></div>
+                  </div>
+                  <div class="copy">
+                    <p>今天在公园草地看到猫猫一家三口，猫妈妈一直护着两只小猫。</p>
+                    <div class="tags"><span class="tag">#流浪猫</span><span class="tag">#家庭</span><span class="tag">#不公开位置</span></div>
+                  </div>
+                </article>
+                <article class="feed-card">
+                  <div class="post-head">
+                    <div class="avatar" style="background-image:url('https://images.unsplash.com/photo-1548199973-03cce0bbc87b?auto=format&fit=crop&w=200&q=80')"></div>
+                    <div class="meta"><b>豆包、Lucky</b><span>今天 17:10 · 河边公园</span></div>
+                  </div>
+                  <div class="photo dog"></div>
+                  <div class="copy"><p>一起跑了半小时，两个都累趴了。</p><div class="tags"><span class="tag">#我的</span><span class="tag">#允许我记录</span></div></div>
+                </article>
+              </div>
+              <nav class="tabbar"><div class="tab active">首页</div><div class="tab">图鉴</div><div class="tab"><div class="plus">+</div></div><div class="tab">地图</div><div class="tab">我的</div></nav>
+            </div>
+          </div>
+
+          <div class="frame-wrap">
+            <div class="frame-title"><h3>动态详情</h3><span>单条 Post</span></div>
+            <div class="phone">
+              <div class="screen">
+                <div class="appbar"><div class="icon">‹</div><h4>动态</h4><div class="icon-row"><div class="icon">↗</div><div class="icon">···</div></div></div>
+                <section class="panel">
+                  <div class="detail-author">
+                    <div class="avatar"></div>
+                    <div class="meta"><b>猫妈妈、小白崽、小黑崽</b><span>今天 18:30 · 模糊地点</span></div>
+                  </div>
+                  <div class="photo multi">
+                    <div style="background-image:url('https://images.unsplash.com/photo-1573865526739-10659fec78a5?auto=format&fit=crop&w=400&q=80')"></div>
+                    <div style="background-image:url('https://images.unsplash.com/photo-1495360010541-f48722b34f7d?auto=format&fit=crop&w=400&q=80')"></div>
+                  </div>
+                  <div class="copy">
+                    <p>今天在公园草地看到猫猫一家三口，猫妈妈一直护着两只小猫，两个小家伙精神都不错。</p>
+                    <div class="info-block">类型：备注<br />位置：模糊地点<br />来源：我记录的</div>
+                    <b style="font-size:13px">这条动态里的毛孩</b>
+                    <div class="linked-row">
+                      <div class="linked"><div class="avatar"></div><span>猫妈妈</span></div>
+                      <div class="linked"><div class="avatar"></div><span>小白崽</span></div>
+                      <div class="linked"><div class="avatar"></div><span>小黑崽</span></div>
+                    </div>
+                    <p style="color:var(--clay);font-weight:800;margin-top:12px">查看猫妈妈的全部动态 →</p>
+                  </div>
+                </section>
+              </div>
+            </div>
+          </div>
+
+          <div class="frame-wrap">
+            <div class="frame-title"><h3>毛孩主页</h3><span>长期主页</span></div>
+            <div class="phone">
+              <div class="screen">
+                <div class="appbar"><div class="icon">‹</div><h4>猫妈妈</h4><div class="icon-row"><div class="icon">↗</div><div class="icon">···</div></div></div>
+                <section class="panel profile-head">
+                  <div class="avatar"></div>
+                  <h4>猫妈妈</h4>
+                  <p>三花流浪猫 · 疑似已绝育<br />模糊地点 · 3 条动态 · 5 张照片</p>
+                  <div class="tags" style="justify-content:center;margin-top:10px"><span class="tag">#流浪猫</span><span class="tag">#观察中</span><span class="tag">#我的</span></div>
+                </section>
+                <div class="tabs"><span class="active">动态</span><span>照片</span><span>地点</span><span>档案</span></div>
+                <article class="feed-card">
+                  <div class="copy"><span style="color:var(--muted);font-size:12px;font-weight:800">今天 18:30 · 模糊地点</span><p style="margin-top:8px">今天在公园草地看到猫猫一家三口。</p><div class="tags"><span class="tag">#家庭</span><span class="tag">#不公开位置</span></div></div>
+                </article>
+                <article class="feed-card">
+                  <div class="copy"><span style="color:var(--muted);font-size:12px;font-weight:800">5月19日 · 模糊地点</span><p style="margin-top:8px">拍到一张很清楚的正脸。</p></div>
+                </article>
+              </div>
+              <nav class="tabbar"><div class="tab">首页</div><div class="tab">图鉴</div><div class="tab"><div class="plus">+</div></div><div class="tab">地图</div><div class="tab">我的</div></nav>
+            </div>
+          </div>
+
+          <div class="frame-wrap">
+            <div class="frame-title"><h3>图鉴</h3><span>找毛孩</span></div>
+            <div class="phone">
+              <div class="screen">
+                <div class="appbar"><h4>图鉴</h4><div class="icon">▦</div></div>
+                <div class="search">搜索昵称、毛色、特征</div>
+                <div class="tags" style="margin-bottom:12px"><span class="tag">#全部</span><span class="tag">#我的</span><span class="tag">#分享给我的</span><span class="tag">#已送养</span></div>
+                <div class="catalog-grid">
+                  <div class="animal-card"><img src="https://images.unsplash.com/photo-1518791841217-8f162f1e1131?auto=format&fit=crop&w=500&q=80" alt="" /><div><b>奶盖</b><span>48 动态 · 自家宠物</span></div></div>
+                  <div class="animal-card"><img src="https://images.unsplash.com/photo-1573865526739-10659fec78a5?auto=format&fit=crop&w=500&q=80" alt="" /><div><b>猫妈妈</b><span>3 动态 · 流浪猫</span></div></div>
+                  <div class="animal-card"><img src="https://images.unsplash.com/photo-1495360010541-f48722b34f7d?auto=format&fit=crop&w=500&q=80" alt="" /><div><b>芝麻崽</b><span>朋友在记录 · 已送养</span></div></div>
+                  <div class="animal-card"><img src="https://images.unsplash.com/photo-1548199973-03cce0bbc87b?auto=format&fit=crop&w=500&q=80" alt="" /><div><b>Lucky</b><span>允许我记录</span></div></div>
+                </div>
+              </div>
+              <nav class="tabbar"><div class="tab">首页</div><div class="tab active">图鉴</div><div class="tab"><div class="plus">+</div></div><div class="tab">地图</div><div class="tab">我的</div></nav>
+            </div>
+          </div>
+
+          <div class="frame-wrap">
+            <div class="frame-title"><h3>发动态</h3><span>多动物选择</span></div>
+            <div class="phone">
+              <div class="screen">
+                <div class="appbar"><div class="icon">‹</div><h4>发动态</h4></div>
+                <section class="panel" style="padding:14px">
+                  <b style="font-size:14px">这条动态里的毛孩</b>
+                  <div class="selector" style="margin-top:12px">
+                    <div class="select-row"><div class="check on"></div><div class="avatar"></div><div class="meta"><b>猫妈妈</b><span>我的</span></div><div class="primary-pill">主角</div></div>
+                    <div class="select-row"><div class="check on"></div><div class="avatar"></div><div class="meta"><b>小白崽</b><span>我的</span></div></div>
+                    <div class="select-row"><div class="check on"></div><div class="avatar"></div><div class="meta"><b>小黑崽</b><span>我的</span></div></div>
+                  </div>
+                  <p style="color:var(--clay);font-size:13px;font-weight:900">+ 新建毛孩并加入这条动态</p>
+                </section>
+                <section class="panel" style="padding:14px;margin-top:12px">
+                  <b style="font-size:14px">照片，可选</b>
+                  <div class="photo multi" style="border-radius:14px;margin-top:10px"></div>
+                  <div class="textarea">今天在公园草地看到猫猫一家三口，猫妈妈一直护着两只小猫。</div>
+                </section>
+                <div class="tags" style="margin-top:12px"><span class="tag">#照片</span><span class="tag">#喂养</span><span class="tag">#健康</span><span class="tag">#出现</span></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="frame-wrap">
+            <div class="frame-title"><h3>地图</h3><span>私密地点</span></div>
+            <div class="phone">
+              <div class="screen">
+                <div class="appbar"><h4>地图</h4></div>
+                <div class="tags" style="margin-bottom:12px"><span class="tag">#全部</span><span class="tag">#我的宠物</span><span class="tag">#流浪动物</span></div>
+                <div class="info-block">这里只看你的记录地点。流浪动物点位默认模糊，敏感地点不展示精确坐标。</div>
+                <div class="map">
+                  <div class="pin" style="left:34%;top:32%">◎</div>
+                  <div class="pin pet" style="left:66%;top:48%">⌖</div>
+                  <div class="pin" style="left:50%;top:66%">◎</div>
+                </div>
+                <div class="bottom-sheet">
+                  <div class="post-head" style="padding:0">
+                    <div class="avatar"></div>
+                    <div class="meta"><b>猫妈妈</b><span>最近动态 · 模糊地点</span></div>
+                  </div>
+                  <div class="tags" style="margin-top:10px"><span class="tag">查看动态</span><span class="tag">查看主页</span></div>
+                </div>
+              </div>
+              <nav class="tabbar"><div class="tab">首页</div><div class="tab">图鉴</div><div class="tab"><div class="plus">+</div></div><div class="tab active">地图</div><div class="tab">我的</div></nav>
+            </div>
+          </div>
+
+          <div class="frame-wrap">
+            <div class="frame-title"><h3>我的</h3><span>数据和权限</span></div>
+            <div class="phone">
+              <div class="screen">
+                <div class="appbar"><h4>我的</h4></div>
+                <section class="panel" style="padding:16px">
+                  <div style="display:flex;gap:12px;align-items:center">
+                    <div class="avatar" style="background-image:none;background:#fff0df;display:grid;place-items:center;font-weight:900;color:var(--clay)">我</div>
+                    <div class="meta"><b>本地用户</b><span>无登录 MVP，数据保存在本机</span></div>
+                  </div>
+                  <div class="tags" style="margin-top:12px"><span class="tag">#默认私密</span><span class="tag">#位置保护</span></div>
+                </section>
+                <div class="profile-list" style="margin-top:14px">
+                  <div class="row"><div class="row-icon">◎</div><div><b>我的毛孩</b><span>所有我能看到的档案</span></div></div>
+                  <div class="row"><div class="row-icon">↗</div><div><b>分享给我的</b><span>别人分享给我的毛孩</span></div></div>
+                  <div class="row"><div class="row-icon">+</div><div><b>允许我记录</b><span>我可以继续补充动态</span></div></div>
+                  <div class="row"><div class="row-icon">⇄</div><div><b>我送养/转交出去的</b><span>仍可查看成长动态</span></div></div>
+                  <div class="row"><div class="row-icon">⚿</div><div><b>隐私与位置保护</b><span>分享前过滤敏感信息</span></div></div>
+                </div>
+              </div>
+              <nav class="tabbar"><div class="tab">首页</div><div class="tab">图鉴</div><div class="tab"><div class="plus">+</div></div><div class="tab">地图</div><div class="tab active">我的</div></nav>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
