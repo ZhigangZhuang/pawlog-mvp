@@ -16,7 +16,7 @@ import { ProfilePage } from "../pages/ProfilePage";
 import { SelectAnimalPage } from "../pages/SelectAnimalPage";
 import { ShareCardPage } from "../pages/ShareCardPage";
 import type { Animal, AppState, BottomTab } from "../types";
-import { activeAnimals, withChangeLog } from "../utils/storage";
+import { activeAnimals, primaryAnimalIdForRecord, withChangeLog } from "../utils/storage";
 
 type AppRouterProps = {
   state: AppState;
@@ -88,7 +88,7 @@ export function AppRouter({ state, setState, route, setRoute, activeTab, goTabs,
   }
 
   if (route.name === "post" && selectedPost) {
-    const animal = state.animals.find((item) => item.id === selectedPost.animal_id);
+    const animal = state.animals.find((item) => item.id === primaryAnimalIdForRecord(selectedPost));
     if (animal) {
       return (
         <PostDetailPage
