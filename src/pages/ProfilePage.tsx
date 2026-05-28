@@ -9,10 +9,9 @@ type ProfilePageProps = {
   state: AppState;
   onImport: () => void;
   onInbox: () => void;
-  onGroups: () => void;
 };
 
-export function ProfilePage({ state, onImport, onInbox, onGroups }: ProfilePageProps) {
+export function ProfilePage({ state, onImport, onInbox }: ProfilePageProps) {
   const animals = activeAnimals(state);
   const sharedToMe = animals.filter((animal) => animal.animal_source === "shared_to_me").length;
   const recordable = animals.filter((animal) => animal.visibility === "shared_recordable").length;
@@ -53,9 +52,7 @@ export function ProfilePage({ state, onImport, onInbox, onGroups }: ProfilePageP
           <Row icon={<UsersRound size={19} />} title="我送养/转交出去的" text={`${transferredOut} 只仍可查看成长动态`} />
           <Row icon={<UsersRound size={19} />} title="别人转交给我的" text={`${transferredToMe} 只由我继续记录`} />
           <Row icon={<ShieldCheck size={19} />} title="我分享出去的" text="公开卡片默认不含流浪动物精确位置" />
-          <button className="w-full" onClick={onGroups}>
-            <Row icon={<UsersRound size={19} />} title="协作圈" text="家人、朋友、小区猫友的分享范围" />
-          </button>
+          <Row icon={<UsersRound size={19} />} title="协作圈" text="后续会作为分享范围，不进入独立小组空间" />
           <button className="w-full" onClick={onImport}>
             <Row icon={<FileInput size={19} />} title="导入分享档案" text="保存为新档案或合并到已有档案" />
           </button>

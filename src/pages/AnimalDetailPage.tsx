@@ -13,15 +13,12 @@ type AnimalDetailPageProps = {
   onAddRecord: (type?: RecordType) => void;
   onShare: () => void;
   onMerge: () => void;
-  onShareToGroup: () => void;
-  onEditGroupTags?: () => void;
-  currentGroupId?: string;
 };
 
 type DetailTab = "timeline" | "photos" | "places" | "profile";
 type AnimalPermission = "owner" | "recordable" | "readonly";
 
-export function AnimalDetailPage({ animal, state, onBack, onAddRecord, onShare, onMerge, onShareToGroup, onEditGroupTags, currentGroupId }: AnimalDetailPageProps) {
+export function AnimalDetailPage({ animal, state, onBack, onAddRecord, onShare, onMerge }: AnimalDetailPageProps) {
   const [tab, setTab] = useState<DetailTab>("timeline");
   const [moreOpen, setMoreOpen] = useState(false);
   const isStray = animal.animal_origin === "stray";
@@ -53,8 +50,6 @@ export function AnimalDetailPage({ animal, state, onBack, onAddRecord, onShare, 
           </button>
           {moreOpen ? (
             <div className="absolute right-0 top-11 z-30 w-40 overflow-hidden rounded-xl bg-white text-sm font-semibold shadow-soft ring-1 ring-sand/70">
-              {canEdit ? <button className="block w-full px-3 py-2 text-left" onClick={onShareToGroup}>共享权限</button> : null}
-              {currentGroupId && onEditGroupTags ? <button className="block w-full px-3 py-2 text-left" onClick={onEditGroupTags}>编辑标签</button> : null}
               {canEdit ? <button className="block w-full px-3 py-2 text-left" onClick={onMerge}>合并档案</button> : null}
               {!canEdit ? <button className="block w-full px-3 py-2 text-left">保存到我的图鉴</button> : null}
             </div>

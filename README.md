@@ -55,14 +55,15 @@
 
 产品和开发规则已经拆到 `docs/`：
 
-- [PRD.md](/Users/guoguo/Desktop/猫猫狗狗/docs/PRD.md)：产品定位、核心对象、功能范围
-- [UX_RULES.md](/Users/guoguo/Desktop/猫猫狗狗/docs/UX_RULES.md)：不可轻易违背的交互规则
-- [DATA_MODEL.md](/Users/guoguo/Desktop/猫猫狗狗/docs/DATA_MODEL.md)：核心数据模型
-- [PRIVACY_RULES.md](/Users/guoguo/Desktop/猫猫狗狗/docs/PRIVACY_RULES.md)：流浪动物和分享隐私红线
-- [ROADMAP.md](/Users/guoguo/Desktop/猫猫狗狗/docs/ROADMAP.md)：版本规划
-- [CHANGELOG.md](/Users/guoguo/Desktop/猫猫狗狗/docs/CHANGELOG.md)：明显改动记录
-- [design/README.md](/Users/guoguo/Desktop/猫猫狗狗/design/README.md)：设计管理说明
-- [ui-board.html](/Users/guoguo/Desktop/猫猫狗狗/design/ui-board.html)：本地 UI 设计看板
+- [PRD.md](docs/PRD.md)：产品定位、核心对象、功能范围
+- [UX_RULES.md](docs/UX_RULES.md)：不可轻易违背的交互规则
+- [DATA_MODEL.md](docs/DATA_MODEL.md)：核心数据模型
+- [PRIVACY_RULES.md](docs/PRIVACY_RULES.md)：流浪动物和分享隐私红线
+- [ROADMAP.md](docs/ROADMAP.md)：版本规划
+- [QA_CHECKLIST.md](docs/QA_CHECKLIST.md)：手工验收清单
+- [CHANGELOG.md](docs/CHANGELOG.md)：明显改动记录
+- [design/README.md](design/README.md)：设计管理说明
+- [ui-board.html](design/ui-board.html)：本地 UI 设计看板
 
 后续开发新功能前，请先检查：
 
