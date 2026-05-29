@@ -8,6 +8,10 @@
 
 本产品不做宠物版小红书，不做公开宠物订阅平台，不做公开附近流浪动物地图。
 
+## 在线预览
+
+- [PawLog MVP on GitHub Pages](https://zhigangzhuang.github.io/pawlog-mvp/)
+
 ## 当前版本
 
 这是一个纯前端 Web MVP。
@@ -61,6 +65,7 @@
 - [PRIVACY_RULES.md](docs/PRIVACY_RULES.md)：流浪动物和分享隐私红线
 - [ROADMAP.md](docs/ROADMAP.md)：版本规划
 - [QA_CHECKLIST.md](docs/QA_CHECKLIST.md)：手工验收清单
+- [MOBILE_QA_REPORT.md](docs/MOBILE_QA_REPORT.md)：线上移动端验收记录
 - [CHANGELOG.md](docs/CHANGELOG.md)：明显改动记录
 - [design/README.md](design/README.md)：设计管理说明
 - [ui-board.html](design/ui-board.html)：本地 UI 设计看板
