@@ -18,6 +18,11 @@ export function goSource(setRoute: Dispatch<SetStateAction<Route>>, goTabs: GoTa
     return;
   }
 
+  if (source?.from === "animal" && source.animalId) {
+    setRoute({ name: "detail", animalId: source.animalId, source: source.parent });
+    return;
+  }
+
   if (source?.from === "catalog") {
     goTabs("catalog");
     return;

@@ -1,8 +1,10 @@
 import type { BottomTab, RecordType } from "../types";
 
 export type RouteSource = {
-  from: Exclude<BottomTab, "add" | "profile"> | "post";
+  from: Exclude<BottomTab, "add" | "profile"> | "post" | "animal";
   postId?: string;
+  animalId?: string;
+  parent?: RouteSource;
 };
 
 export type Route =

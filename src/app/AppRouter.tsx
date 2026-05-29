@@ -111,6 +111,7 @@ export function AppRouter({ state, setState, route, setRoute, activeTab, goTabs,
         onAddRecord={(type) => setRoute({ name: "addRecord", animalId: selectedAnimal.id, type, source: route.source })}
         onShare={() => setRoute({ name: "share", animalId: selectedAnimal.id })}
         onMerge={() => setRoute({ name: "merge", animalId: selectedAnimal.id })}
+        onOpenAnimal={(animalId) => openAnimal(animalId, { from: "animal", animalId: selectedAnimal.id, parent: route.source })}
       />
     );
   }

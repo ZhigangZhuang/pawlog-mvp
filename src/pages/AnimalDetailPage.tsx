@@ -1,4 +1,4 @@
-import { MapPin, MessageCircle, MoreHorizontal, PenLine, Plus, Share2, ShieldCheck } from "lucide-react";
+import { HeartHandshake, MapPin, MessageCircle, MoreHorizontal, PenLine, Plus, Share2, ShieldCheck, UsersRound } from "lucide-react";
 import type React from "react";
 import { useState } from "react";
 import { AppShell } from "../components/AppShell";
@@ -13,12 +13,13 @@ type AnimalDetailPageProps = {
   onAddRecord: (type?: RecordType) => void;
   onShare: () => void;
   onMerge: () => void;
+  onOpenAnimal: (animalId: string) => void;
 };
 
 type DetailTab = "timeline" | "photos" | "places" | "profile";
 type AnimalPermission = "owner" | "recordable" | "readonly";
 
-export function AnimalDetailPage({ animal, state, onBack, onAddRecord, onShare, onMerge }: AnimalDetailPageProps) {
+export function AnimalDetailPage({ animal, state, onBack, onAddRecord, onShare, onMerge, onOpenAnimal }: AnimalDetailPageProps) {
   const [tab, setTab] = useState<DetailTab>("timeline");
   const [moreOpen, setMoreOpen] = useState(false);
   const isStray = animal.animal_origin === "stray";
@@ -34,6 +35,15 @@ export function AnimalDetailPage({ animal, state, onBack, onAddRecord, onShare, 
   const relationships = state.animalRelationships.filter((item) => item.from_animal_id === animal.id || item.to_animal_id === animal.id);
   const families = state.animalFamilies.filter((family) => family.member_animal_ids.includes(animal.id));
   const transfers = state.animalTransfers.filter((transfer) => transfer.animal_id === animal.id);
+  const relatedAnimals = relationships
+    .map((relation) => {
+      const otherId = relation.from_animal_id === animal.id ? relation.to_animal_id : relation.from_animal_id;
+      const other = animalById.get(otherId);
+      if (!other) return null;
+      return { animal: other, relation, outgoing: relation.from_animal_id === animal.id };
+    })
+    .filter(Boolean) as Array<{ animal: Animal; relation: (typeof relationships)[number]; outgoing: boolean }>;
+  const transferSummary = transferText(animal, transfers[0]);
 
   return (
     <AppShell
@@ -81,6 +91,45 @@ export function AnimalDetailPage({ animal, state, onBack, onAddRecord, onShare, 
             <ShieldCheck className="mt-0.5 shrink-0" size={16} />
             <p>流浪动物分享时会隐藏精确位置、固定出没时间、幼崽窝点和抓捕计划。</p>
           </div>
+        ) : null}
+
+        {transferSummary || families.length || relatedAnimals.length ? (
+          <section className="space-y-3 rounded-[20px] bg-white p-4 ring-1 ring-sand/70">
+            {transferSummary ? (
+              <div className="flex gap-3 rounded-2xl bg-orange-50 p-3 text-sm leading-6 text-stone-700">
+                <HeartHandshake className="mt-0.5 shrink-0 text-clay" size={18} />
+                <p>{transferSummary}</p>
+              </div>
+            ) : null}
+            {families.length ? (
+              <div>
+                <div className="mb-2 flex items-center gap-2 text-sm font-bold text-stone-600">
+                  <UsersRound size={16} />
+                  <span>{families[0].name}</span>
+                </div>
+                <div className="flex gap-2 overflow-x-auto pb-1">
+                  {families[0].member_animal_ids
+                    .map((id) => animalById.get(id))
+                    .filter(isAnimal)
+                    .map((member) => (
+                      <button key={member.id} className="w-16 shrink-0 text-center" onClick={() => member.id !== animal.id && onOpenAnimal(member.id)}>
+                        <img className={`mx-auto h-11 w-11 rounded-full object-cover ${member.id === animal.id ? "ring-2 ring-clay" : ""}`} src={member.cover_image_url} alt={member.name} />
+                        <span className="mt-1 block truncate text-xs font-bold text-stone-600">{member.id === animal.id ? "当前" : member.name}</span>
+                      </button>
+                    ))}
+                </div>
+              </div>
+            ) : null}
+            {relatedAnimals.length ? (
+              <div className="flex gap-2 overflow-x-auto pb-1">
+                {relatedAnimals.slice(0, 5).map(({ animal: related, relation, outgoing }) => (
+                  <button key={relation.id} className="shrink-0 rounded-full bg-cream px-3 py-2 text-left text-xs font-semibold text-stone-600" onClick={() => onOpenAnimal(related.id)}>
+                    {related.name} · {relationLabel(relation.relation_type, outgoing)}
+                  </button>
+                ))}
+              </div>
+            ) : null}
+          </section>
         ) : null}
 
         <div className="flex justify-around border-b border-sand/80 text-sm font-bold text-stone-500">
@@ -170,24 +219,30 @@ export function AnimalDetailPage({ animal, state, onBack, onAddRecord, onShare, 
                 {families.map((family) => (
                   <div key={family.id} className="rounded-2xl bg-cream p-3">
                     <p className="text-sm font-bold text-stone-700">{family.name}</p>
-                    <p className="mt-1 text-xs leading-5 text-stone-500">
-                      {family.member_animal_ids.map((id) => animalById.get(id)?.name).filter(Boolean).join("、")}
-                    </p>
+                    {family.description ? <p className="mt-1 text-xs leading-5 text-stone-500">{family.description}</p> : null}
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      {family.member_animal_ids
+                        .map((id) => animalById.get(id))
+                        .filter(isAnimal)
+                        .map((member) => (
+                          <button key={member.id} className="inline-flex items-center gap-2 rounded-full bg-white px-2 py-1 text-xs font-bold text-stone-600 ring-1 ring-sand/70" onClick={() => member.id !== animal.id && onOpenAnimal(member.id)}>
+                            <img className="h-6 w-6 rounded-full object-cover" src={member.cover_image_url} alt={member.name} />
+                            {member.id === animal.id ? "当前毛孩" : member.name}
+                          </button>
+                        ))}
+                    </div>
                   </div>
                 ))}
                 {relationships.length ? (
-                  relationships.map((relation) => {
-                    const otherId = relation.from_animal_id === animal.id ? relation.to_animal_id : relation.from_animal_id;
-                    const other = animalById.get(otherId);
-                    if (!other) return null;
+                  relatedAnimals.map(({ animal: other, relation, outgoing }) => {
                     return (
-                      <div key={relation.id} className="flex items-center gap-3">
+                      <button key={relation.id} className="flex w-full items-center gap-3 rounded-2xl px-1 py-1 text-left" onClick={() => onOpenAnimal(other.id)}>
                         <img className="h-10 w-10 rounded-full object-cover" src={other.cover_image_url} alt={other.name} />
                         <span className="min-w-0">
                           <span className="block text-sm font-bold">{other.name}</span>
-                          <span className="block text-xs text-stone-500">{relationLabel(relation.relation_type, relation.from_animal_id === animal.id)}{relation.note ? ` · ${relation.note}` : ""}</span>
+                          <span className="block text-xs text-stone-500">{relationLabel(relation.relation_type, outgoing)}{relation.note ? ` · ${relation.note}` : ""}</span>
                         </span>
-                      </div>
+                      </button>
                     );
                   })
                 ) : families.length ? null : (
@@ -254,6 +309,10 @@ function TinyTag({ children }: { children: React.ReactNode }) {
   return <span className="rounded-full bg-stone-100 px-2 py-0.5 text-xs font-semibold text-stone-600">#{children}</span>;
 }
 
+function isAnimal(animal: Animal | undefined): animal is Animal {
+  return Boolean(animal);
+}
+
 function Info({ label, value }: { label: string; value: string }) {
   return (
     <div>
@@ -277,6 +336,24 @@ function permissionLabels(animal: Animal) {
   if (animal.ownership_status === "transferred_out") labels.push("已送养");
   if (animal.ownership_status === "transferred_to_me") labels.push("转交给我的");
   return labels;
+}
+
+function transferText(animal: Animal, transfer?: AppState["animalTransfers"][number]) {
+  if (animal.ownership_status === "transferred_out") {
+    const keeper = animal.current_keeper_label || transfer?.to_user_label || "朋友";
+    if (transfer?.keep_record_permission) return `现在住在${keeper}家，你仍可以补充旧照片和动态。`;
+    return animal.transfer_note || `现在由${keeper}记录，你可以继续看到它的成长动态。`;
+  }
+
+  if (animal.ownership_status === "transferred_to_me") {
+    return "这只毛孩现在由你继续记录，原记录者仍可按分享权限查看成长动态。";
+  }
+
+  if (animal.ownership_status === "co_recording") {
+    return "这只毛孩正在共同记录，适合家人或可信朋友一起补充动态。";
+  }
+
+  return "";
 }
 
 function firstLocationText(locations: Array<{ location_name: string; is_sensitive: boolean }>, isStray: boolean) {
