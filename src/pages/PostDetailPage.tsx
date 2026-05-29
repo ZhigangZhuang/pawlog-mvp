@@ -184,7 +184,7 @@ function safeLocationText(animals: Animal[], post: AnimalRecord) {
 
 function sourceLabel(post: AnimalRecord, animal: Animal) {
   if (post.source === "shared_user") return animal.visibility === "shared_recordable" ? "分享给我的 · 允许我记录" : "分享给我的";
-  if (animal.animal_source === "shared_to_me") return "来自分享给我的毛孩";
+  if (animal.animal_source === "shared_to_me") return animal.visibility === "shared_recordable" ? "分享给我的 · 允许我记录" : "分享给我的 · 只读";
   return "我记录的";
 }
 

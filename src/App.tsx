@@ -46,7 +46,6 @@ export default function App() {
         <NewAnimalToast
           animal={newAnimal}
           count={activeAnimals(state).length}
-          space={{ type: "personal", id: "personal", label: "个人空间" }}
           onClose={() => setNewAnimal(undefined)}
           onOpen={() => {
             const id = newAnimal.id;

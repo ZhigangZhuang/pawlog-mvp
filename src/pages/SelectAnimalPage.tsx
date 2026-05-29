@@ -33,9 +33,11 @@ export function SelectAnimalPage({
               <img className="h-16 w-16 rounded-lg object-cover" src={animal.cover_image_url} alt={animal.name} />
               <span className="min-w-0 flex-1">
                 <span className="block font-bold">{animal.name}</span>
-                <span className="text-sm text-stone-500">{speciesLabels[animal.species]} · {animal.animal_origin === "stray" ? "流浪动物" : "自家宠物"}</span>
+                <span className="text-sm text-stone-500">
+                  {speciesLabels[animal.species]} · {animal.animal_origin === "stray" ? "流浪动物" : "自家宠物"} · {animal.animal_source === "shared_to_me" ? "允许我记录" : "我的"}
+                </span>
               </span>
-              <Badge tone={animal.animal_origin === "stray" ? "green" : "orange"}>发记录</Badge>
+              <Badge tone={animal.animal_origin === "stray" ? "green" : "orange"}>发动态</Badge>
             </button>
           ))}
         </div>

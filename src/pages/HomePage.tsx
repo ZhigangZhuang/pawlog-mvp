@@ -62,7 +62,7 @@ function FeedCard({ record, animal, linkedAnimals, tags, onOpenPost }: { record:
 
         <div className="flex flex-wrap gap-1.5">
           <TinyTag>{recordTypeLabels[toRecordType(record.type)]}</TinyTag>
-          {[...tags, ...permissionTags].slice(0, 5).map((tag) => (
+          {[...permissionTags, ...tags].slice(0, 5).map((tag) => (
             <TinyTag key={tag}>{tag}</TinyTag>
           ))}
         </div>
@@ -110,6 +110,7 @@ function permissionLabels(animal: Animal) {
   if (animal.animal_source === "created_by_me") labels.push("我的");
   if (animal.animal_source === "shared_to_me") labels.push("分享给我的");
   if (animal.visibility === "shared_recordable") labels.push("允许我记录");
+  if (animal.animal_source === "shared_to_me" && animal.visibility === "shared_readonly") labels.push("只读");
   return labels;
 }
 

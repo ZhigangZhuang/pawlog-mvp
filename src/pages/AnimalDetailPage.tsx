@@ -333,6 +333,7 @@ function permissionLabels(animal: Animal) {
   if (animal.animal_source === "created_by_me") labels.push("我的");
   if (animal.animal_source === "shared_to_me") labels.push("分享给我的");
   if (animal.visibility === "shared_recordable") labels.push("允许我记录");
+  if (animal.animal_source === "shared_to_me" && animal.visibility === "shared_readonly") labels.push("只读");
   if (animal.ownership_status === "transferred_out") labels.push("已送养");
   if (animal.ownership_status === "transferred_to_me") labels.push("转交给我的");
   return labels;

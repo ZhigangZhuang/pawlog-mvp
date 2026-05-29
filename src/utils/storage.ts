@@ -15,7 +15,7 @@ import {
   mockWatches,
   mockWikiPages,
 } from "../data/mockData";
-import type { Animal, AnimalFamily, AnimalPhoto, AnimalRecord, AnimalRelationship, AnimalTransfer, AppState, ChangeLog, FeedRecordType, GroupRole, PostAnimal, SpaceContext, StrayLocation, TimelineItem } from "../types";
+import type { Animal, AnimalFamily, AnimalPhoto, AnimalRecord, AnimalRelationship, AnimalTransfer, AppState, ChangeLog, FeedRecordType, PostAnimal, StrayLocation, TimelineItem } from "../types";
 
 const STORAGE_KEY = "pawlog_app_state_v5_clean_feed";
 
@@ -101,55 +101,6 @@ const normalizeLocation = (location: StrayLocation, animalById: Map<string, Anim
     created_by: location.created_by || "user_1",
     updated_at: location.updated_at || location.created_at,
     source: location.source || { source_type: "self" },
-  };
-};
-
-export const getUserRoleForGroup = (state: AppState, groupId: string, userId = "user_1"): GroupRole | undefined =>
-  state.groupMembers.find((member) => member.group_id === groupId && member.user_id === userId)?.role;
-
-export const getSpaceContext = (state: AppState, spaceId: string): SpaceContext => {
-  if (spaceId === "personal") return { type: "personal", id: "personal", label: "个人空间" };
-  const group = state.groups.find((item) => item.id === spaceId);
-  if (!group) return { type: "personal", id: "personal", label: "个人空间" };
-  return { type: "group", id: group.id, label: group.name, role: getUserRoleForGroup(state, group.id) || "viewer" };
-};
-
-export const scopedState = (state: AppState, space: SpaceContext): AppState => {
-  if (space.type === "personal") return state;
-  const sharedAnimalIds = new Set(state.groupAnimals.filter((item) => item.group_id === space.id).map((item) => item.animal_id));
-  const animals = state.animals.filter((animal) => sharedAnimalIds.has(animal.id));
-  const visibleLocations = state.locations
-    .filter((location) => sharedAnimalIds.has(location.animal_id))
-    .filter((location) => {
-      const share = state.groupAnimals.find((item) => item.group_id === space.id && item.animal_id === location.animal_id);
-      if (!share?.share_blurred_location) return false;
-      if (location.is_sensitive) return false;
-      return true;
-    })
-    .map((location) => ({
-      ...location,
-      latitude: undefined,
-      longitude: undefined,
-      precision_level: "text_only" as const,
-      address_text: "小组地图仅显示模糊区域",
-    }));
-
-  return {
-    ...state,
-    animals,
-    photos: state.photos.filter((photo) => sharedAnimalIds.has(photo.animal_id)),
-    timeline: state.timeline.filter((item) => sharedAnimalIds.has(item.animal_id)),
-    locations: visibleLocations,
-    tags: state.tags.filter((tag) => tag.scope === "personal" || tag.group_id === space.id),
-    animalTags: state.animalTags.filter((item) => sharedAnimalIds.has(item.animal_id)),
-    issues: state.issues.filter((issue) => issue.group_id === space.id || (issue.animal_id && sharedAnimalIds.has(issue.animal_id))),
-    changeLogs: state.changeLogs.filter((log) => log.group_id === space.id || (log.animal_id && sharedAnimalIds.has(log.animal_id))),
-    wikiPages: state.wikiPages.filter((page) => page.group_id === space.id),
-    feedRecords: state.feedRecords.filter((record) => animalIdsForRecord(record).some((animalId) => sharedAnimalIds.has(animalId))),
-    postAnimals: state.postAnimals.filter((item) => sharedAnimalIds.has(item.animal_id)),
-    animalRelationships: state.animalRelationships.filter((item) => sharedAnimalIds.has(item.from_animal_id) || sharedAnimalIds.has(item.to_animal_id)),
-    animalFamilies: state.animalFamilies.filter((family) => family.member_animal_ids.some((animalId) => sharedAnimalIds.has(animalId))),
-    animalTransfers: state.animalTransfers.filter((transfer) => sharedAnimalIds.has(transfer.animal_id)),
   };
 };
 

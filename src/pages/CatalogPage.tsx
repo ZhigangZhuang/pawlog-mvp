@@ -10,7 +10,7 @@ type Filter = "all" | "owned_pet" | "stray" | "stray_cat" | "stray_dog" | "neute
 
 const filters: Array<{ id: Filter; label: string }> = [
   { id: "all", label: "全部" },
-  { id: "owned_pet", label: "自家宠物" },
+  { id: "owned_pet", label: "我的宠物" },
   { id: "stray", label: "流浪动物" },
   { id: "stray_cat", label: "流浪猫" },
   { id: "stray_dog", label: "流浪狗" },
@@ -138,12 +138,13 @@ function matchFilter(animal: Animal, filter: Filter, state: AppState) {
 
 function catalogTags(animal: Animal) {
   const tags = [animal.animal_origin === "stray" ? "流浪动物" : "自家宠物"];
+  if (animal.animal_source === "shared_to_me") tags.push("分享给我的");
+  if (animal.visibility === "shared_recordable") tags.push("允许我记录");
+  if (animal.animal_source === "shared_to_me" && animal.visibility === "shared_readonly") tags.push("只读");
   if (animal.animal_origin === "stray" && animal.species === "cat") tags.push("流浪猫");
   if (animal.animal_origin === "stray" && animal.species === "dog") tags.push("流浪狗");
   if (animal.neuter_status) tags.push(neuterLabels[animal.neuter_status]);
   if (animal.adoption_status === "available") tags.push("可领养");
-  if (animal.animal_source === "shared_to_me") tags.push("分享给我的");
-  if (animal.visibility === "shared_recordable") tags.push("允许我记录");
   if (animal.ownership_status === "transferred_out") tags.push("已送养");
   if (animal.ownership_status === "transferred_to_me") tags.push("转交给我的");
   return tags;

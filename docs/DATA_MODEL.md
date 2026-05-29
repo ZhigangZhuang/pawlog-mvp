@@ -205,9 +205,9 @@ type AnimalOwnershipStatus =
 - 已送养
 - 转交给我的
 
-## Circle / Share
+## Share Scope
 
-MVP 里协作圈是分享范围，不是独立空间。
+MVP 里的分享范围只表达可信对象授权，不是独立空间。
 
 ```ts
 type AnimalSharePermission =
@@ -255,4 +255,3 @@ type AnimalPhoto = {
 ```
 
 当前 MVP 中，多动物动态会把同一张图片关联到多只毛孩，后续可升级为照片级框选标注。
-

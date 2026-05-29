@@ -52,7 +52,7 @@ export function ProfilePage({ state, onImport, onInbox }: ProfilePageProps) {
           <Row icon={<UsersRound size={19} />} title="我送养/转交出去的" text={`${transferredOut} 只仍可查看成长动态`} />
           <Row icon={<UsersRound size={19} />} title="别人转交给我的" text={`${transferredToMe} 只由我继续记录`} />
           <Row icon={<ShieldCheck size={19} />} title="我分享出去的" text="公开卡片默认不含流浪动物精确位置" />
-          <Row icon={<UsersRound size={19} />} title="协作圈" text="后续会作为分享范围，不进入独立小组空间" />
+          <Row icon={<UsersRound size={19} />} title="分享范围" text="家人、朋友或小区猫友等可信范围，后续可批量授权" />
           <button className="w-full" onClick={onImport}>
             <Row icon={<FileInput size={19} />} title="导入分享档案" text="保存为新档案或合并到已有档案" />
           </button>

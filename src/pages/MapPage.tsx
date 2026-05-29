@@ -49,7 +49,7 @@ export function MapPage({ state, onOpenAnimal, onOpenPost }: { state: AppState; 
         <div className="rounded-lg border border-green-200 bg-green-50 p-4 text-sm leading-6 text-green-900">
           <div className="mb-1 flex items-center gap-2 font-bold">
             <ShieldCheck size={18} />
-            my_private_map
+            私密地图
           </div>
           这里只看你的记录地点。流浪动物点位默认模糊，敏感地点不展示精确坐标，也不会进入公开分享。
         </div>

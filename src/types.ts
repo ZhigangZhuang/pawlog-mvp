@@ -61,7 +61,6 @@ export type AnimalArchiveStatus = "active" | "merged" | "archived" | "deleted";
 export type GroupType = "private_care_group" | "rescue_project" | "family_pet_group";
 export type GroupRole = "owner" | "admin" | "member" | "viewer";
 export type TagScope = "personal" | "group";
-export type SpaceContext = { type: "personal"; id: "personal"; label: string } | { type: "group"; id: string; label: string; role: GroupRole };
 export type InboxPhotoStatus = "unassigned" | "assigned" | "ignored";
 export type IssueStatus = "open" | "in_progress" | "blocked" | "done" | "closed";
 export type IssuePriority = "P0" | "P1" | "P2" | "P3";

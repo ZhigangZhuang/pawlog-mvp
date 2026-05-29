@@ -52,7 +52,7 @@ export function TimelineList({ items, emptyText = "还没有记录" }: { items: 
 }
 
 function sourceLabel(sourceType: string) {
-  if (sourceType === "group_member") return "小组成员";
+  if (sourceType === "group_member") return "共同记录";
   if (sourceType === "imported") return "合并导入";
   if (sourceType === "shared_link") return "分享导入";
   return "自己";

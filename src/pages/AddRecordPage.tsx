@@ -213,7 +213,7 @@ export function AddRecordPage({ animal, state, initialType, onBack, onSave }: Ad
                   <img className="h-9 w-9 rounded-full object-cover" src={item.cover_image_url} alt={item.name} />
                   <span className="min-w-0 flex-1">
                     <span className="block text-sm font-bold">{item.name}</span>
-                    <span className="block text-xs text-stone-500">{item.animal_source === "shared_to_me" ? "分享给我的" : "我的"}</span>
+                    <span className="block text-xs text-stone-500">{item.animal_source === "shared_to_me" ? "允许我记录" : "我的"}</span>
                   </span>
                   {selected ? (
                     <button
