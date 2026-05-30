@@ -642,6 +642,159 @@
           grid-template-columns: 1fr;
         }
       }
+
+      /* ── Flow demo section ── */
+      .positioning-callout {
+        border: 1.5px solid var(--clay);
+        background: #fff7f2;
+        border-radius: 16px;
+        padding: 16px 20px;
+        margin-bottom: 24px;
+        display: flex;
+        gap: 14px;
+        align-items: flex-start;
+      }
+
+      .callout-icon {
+        font-size: 22px;
+        flex-shrink: 0;
+        line-height: 1.4;
+      }
+
+      .positioning-callout p {
+        margin: 0;
+        font-size: 14px;
+        line-height: 1.7;
+        color: #6b3a1e;
+      }
+
+      .positioning-callout strong {
+        color: var(--clay);
+      }
+
+      .flows-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px;
+      }
+
+      .flow-card {
+        background: var(--paper);
+        border: 1px solid var(--line);
+        border-radius: 20px;
+        padding: 22px;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+      }
+
+      .flow-header {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+      }
+
+      .flow-badge {
+        flex-shrink: 0;
+        width: 30px;
+        height: 30px;
+        border-radius: 999px;
+        background: var(--clay);
+        color: white;
+        display: grid;
+        place-items: center;
+        font-size: 13px;
+        font-weight: 900;
+        margin-top: 1px;
+      }
+
+      .flow-badge.green {
+        background: var(--moss);
+      }
+
+      .flow-title-group h3 {
+        margin: 0 0 4px;
+        font-size: 15px;
+        font-weight: 900;
+      }
+
+      .flow-title-group p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.5;
+      }
+
+      .flow-steps {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
+      }
+
+      .flow-step {
+        display: flex;
+        align-items: flex-start;
+        gap: 9px;
+        font-size: 13px;
+        line-height: 1.55;
+        color: var(--ink);
+      }
+
+      .step-num {
+        flex-shrink: 0;
+        width: 19px;
+        height: 19px;
+        border-radius: 999px;
+        background: var(--cream);
+        border: 1px solid var(--line);
+        display: grid;
+        place-items: center;
+        font-size: 10px;
+        font-weight: 900;
+        color: var(--muted);
+        margin-top: 2px;
+      }
+
+      .flow-note {
+        font-size: 12px;
+        color: var(--muted);
+        background: var(--cream);
+        border-radius: 12px;
+        padding: 10px 12px;
+        line-height: 1.65;
+        border-left: 3px solid var(--line);
+      }
+
+      .flow-note.warn {
+        border-left-color: var(--moss);
+        color: #3a5c3b;
+        background: #f0f7f0;
+      }
+
+      .flow-key {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+
+      .flow-key-item {
+        border-radius: 999px;
+        background: #fff0e6;
+        color: var(--clay);
+        padding: 4px 10px;
+        font-size: 11px;
+        font-weight: 800;
+        border: 1px solid #fcd5b8;
+      }
+
+      @media (max-width: 900px) {
+        .flows-grid {
+          grid-template-columns: 1fr;
+        }
+      }
     </style>
   </head>
   <body>
@@ -866,6 +1019,171 @@
               <nav class="tabbar"><div class="tab">首页</div><div class="tab">图鉴</div><div class="tab"><div class="plus">+</div></div><div class="tab">地图</div><div class="tab active">我的</div></nav>
             </div>
           </div>
+        </div>
+      </section>
+      <section>
+        <div class="section-title">
+          <h2>全功能流程演示</h2>
+          <p>6 个核心流程，说清楚产品怎么用、和普通宠物相册有什么不同。</p>
+        </div>
+
+        <div class="positioning-callout">
+          <div class="callout-icon">🐾</div>
+          <p>
+            <strong>这不是宠物版小红书，也不是自家宠物成长相册。</strong><br />
+            核心场景是：长期、安全、可协作地记录流浪猫狗的真实状态和关系网。自家宠物只作为辅助场景。<br />
+            产品差异：没有公开推荐、没有粉丝系统、位置默认模糊、分享给可信的人而非陌生人。
+          </p>
+        </div>
+
+        <div class="flows-grid">
+
+          <!-- Flow 1 -->
+          <div class="flow-card">
+            <div class="flow-header">
+              <div class="flow-badge">1</div>
+              <div class="flow-title-group">
+                <h3>主流程：记录流浪猫</h3>
+                <p>打开 App 到发出第一条动态，最快 3 步。</p>
+              </div>
+            </div>
+            <ol class="flow-steps">
+              <li class="flow-step"><span class="step-num">1</span>打开首页，看到时间流动态（左侧时间点 + 右侧缩略图，首屏 3-4 条）</li>
+              <li class="flow-step"><span class="step-num">2</span>点击一条动态，进入动态详情页</li>
+              <li class="flow-step"><span class="step-num">3</span>点击动物头像 / 名字，进入毛孩主页</li>
+              <li class="flow-step"><span class="step-num">4</span>在主页查看动态、照片、地点、档案四个 Tab</li>
+              <li class="flow-step"><span class="step-num">5</span>点击右下角 +，给这只毛孩发一条新动态</li>
+            </ol>
+            <div class="flow-key">
+              <span class="flow-key-item">首页时间流</span>
+              <span class="flow-key-item">动态详情</span>
+              <span class="flow-key-item">毛孩主页</span>
+              <span class="flow-key-item">发动态</span>
+            </div>
+            <div class="flow-note">首页只展示我记录的和分享给我的，不做公开发现、热门推荐或陌生动物推送。</div>
+          </div>
+
+          <!-- Flow 2 -->
+          <div class="flow-card">
+            <div class="flow-header">
+              <div class="flow-badge">2</div>
+              <div class="flow-title-group">
+                <h3>新建流浪动物</h3>
+                <p>给第一次见到的流浪猫狗建立档案。</p>
+              </div>
+            </div>
+            <ol class="flow-steps">
+              <li class="flow-step"><span class="step-num">1</span>点击底部 +，选择「新建毛孩」</li>
+              <li class="flow-step"><span class="step-num">2</span>选择流浪猫 / 流浪狗（自动跳过品种、生日等非必填字段）</li>
+              <li class="flow-step"><span class="step-num">3</span>填写昵称、毛色、外貌特征（便于下次识别）</li>
+              <li class="flow-step"><span class="step-num">4</span>设置健康状态、绝育状态、是否亲人</li>
+              <li class="flow-step"><span class="step-num">5</span>保存后直接进入这只毛孩的主页，开始记录</li>
+            </ol>
+            <div class="flow-key">
+              <span class="flow-key-item">新建毛孩</span>
+              <span class="flow-key-item">流浪动物字段</span>
+              <span class="flow-key-item">绝育状态</span>
+            </div>
+            <div class="flow-note">流浪动物不要求品种、生日、回家日期。字段尽量少，降低建档门槛，让记录习惯先养成。</div>
+          </div>
+
+          <!-- Flow 3 -->
+          <div class="flow-card">
+            <div class="flow-header">
+              <div class="flow-badge">3</div>
+              <div class="flow-title-group">
+                <h3>多动物动态</h3>
+                <p>一条动态关联多只毛孩，自动同步到各自主页。</p>
+              </div>
+            </div>
+            <ol class="flow-steps">
+              <li class="flow-step"><span class="step-num">1</span>点击底部 +，选择「发动态」</li>
+              <li class="flow-step"><span class="step-num">2</span>上传照片，写一句记录</li>
+              <li class="flow-step"><span class="step-num">3</span>毛孩选择器默认显示最近记录的 6 只，勾选猫妈妈、小白崽、小黑崽</li>
+              <li class="flow-step"><span class="step-num">4</span>点击已选 chip 设置主角：猫妈妈</li>
+              <li class="flow-step"><span class="step-num">5</span>发布后，这条动态同时出现在三只毛孩的主页动态 Tab</li>
+              <li class="flow-step"><span class="step-num">6</span>动态详情显示「这条动态里的毛孩」区（单动物时隐藏）</li>
+            </ol>
+            <div class="flow-key">
+              <span class="flow-key-item">多选毛孩</span>
+              <span class="flow-key-item">设置主角</span>
+              <span class="flow-key-item">动态同步</span>
+            </div>
+            <div class="flow-note">主角决定动态的封面和顶部头像。选择器只展示最近 / 常记录的毛孩，支持搜索和「查看全部」。</div>
+          </div>
+
+          <!-- Flow 4 -->
+          <div class="flow-card">
+            <div class="flow-header">
+              <div class="flow-badge">4</div>
+              <div class="flow-title-group">
+                <h3>送养 / 转交后继续记录</h3>
+                <p>档案不删除，关系变了，记录还在。</p>
+              </div>
+            </div>
+            <ol class="flow-steps">
+              <li class="flow-step"><span class="step-num">1</span>在小猫主页点击「···」，选择「送养 / 转交」</li>
+              <li class="flow-step"><span class="step-num">2</span>填写对方称呼（如「朋友 A」），选择转交类型（送养 / 寄养 / 转交）</li>
+              <li class="flow-step"><span class="step-num">3</span>权限设置：是否保留查看 / 是否允许我继续补充动态</li>
+              <li class="flow-step"><span class="step-num">4</span>转交后对方开始记录小猫成长</li>
+              <li class="flow-step"><span class="step-num">5</span>原主人首页仍然能看到小猫的新动态（分享给我的）</li>
+            </ol>
+            <div class="flow-key">
+              <span class="flow-key-item">送养流程</span>
+              <span class="flow-key-item">保留查看权</span>
+              <span class="flow-key-item">转交后记录</span>
+            </div>
+            <div class="flow-note warn">送养不是删除档案，而是改变记录关系。原主人可以保留「只读查看」或「继续补充旧照片」的权限。</div>
+          </div>
+
+          <!-- Flow 5 -->
+          <div class="flow-card">
+            <div class="flow-header">
+              <div class="flow-badge">5</div>
+              <div class="flow-title-group">
+                <h3>分享给可信的人</h3>
+                <p>把一只流浪猫的档案共享给邻居或志愿者一起记录。</p>
+              </div>
+            </div>
+            <ol class="flow-steps">
+              <li class="flow-step"><span class="step-num">1</span>在毛孩主页点击「↗」分享</li>
+              <li class="flow-step"><span class="step-num">2</span>选择权限：只读查看 / 允许添加动态</li>
+              <li class="flow-step"><span class="step-num">3</span>生成分享链接，发给邻居 / 志愿者</li>
+              <li class="flow-step"><span class="step-num">4</span>对方打开后选择「保存到我的图鉴」</li>
+              <li class="flow-step"><span class="step-num">5</span>如果允许添加，对方可以继续补充喂养、健康、出现记录</li>
+            </ol>
+            <div class="flow-key">
+              <span class="flow-key-item">分享链接</span>
+              <span class="flow-key-item">只读 / 可记录</span>
+              <span class="flow-key-item">保存到图鉴</span>
+            </div>
+            <div class="flow-note">分享对象是手动选择的可信联系人，不是公开订阅。对方不会自动出现在「推荐」或「发现」列表里。</div>
+          </div>
+
+          <!-- Flow 6 -->
+          <div class="flow-card">
+            <div class="flow-header">
+              <div class="flow-badge green">6</div>
+              <div class="flow-title-group">
+                <h3>流浪动物隐私保护</h3>
+                <p>位置默认模糊，敏感信息分享前自动过滤。</p>
+              </div>
+            </div>
+            <ol class="flow-steps">
+              <li class="flow-step"><span class="step-num">1</span>创建流浪动物地点记录时，位置只填文字描述（如「北门附近」），不存储精确坐标</li>
+              <li class="flow-step"><span class="step-num">2</span>发动态时位置字段自动标注「模糊地点」</li>
+              <li class="flow-step"><span class="step-num">3</span>分享动态时自动过滤精确位置、固定出没时间和敏感备注</li>
+              <li class="flow-step"><span class="step-num">4</span>公开分享卡只展示动物外貌和健康摘要，不含地图坐标</li>
+              <li class="flow-step"><span class="step-num">5</span>地图页仅展示我的私密记录，不做公开附近流浪动物地图</li>
+            </ol>
+            <div class="flow-key">
+              <span class="flow-key-item">位置模糊</span>
+              <span class="flow-key-item">分享过滤</span>
+              <span class="flow-key-item">私密地图</span>
+            </div>
+            <div class="flow-note warn">这是产品的安全底线。精确地点、幼崽窝点、抓捕计划均不可公开，也不建议写入动态正文。</div>
+          </div>
+
         </div>
       </section>
     </main>
