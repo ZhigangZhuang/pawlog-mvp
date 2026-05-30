@@ -14,7 +14,8 @@ export function HomePage({ state, onOpenPost, onOpenAnimal }: { state: AppState;
 
   return (
     <AppShell title="毛孩动态">
-      <div className="space-y-2.5 px-4 pb-24 pt-1">
+      {/* AppShell already provides px-4, so no extra horizontal padding here */}
+      <div className="space-y-4 pb-24 pt-1">
         {records.map((record) => {
           const animal = animalById.get(primaryAnimalIdForRecord(record));
           if (!animal) return null;
@@ -62,30 +63,31 @@ function FeedCard({
       ? "模糊地点"
       : record.location_text
     : null;
+
   const typeLabel = recordTypeLabels[toRecordType(record.type)];
   const tagLine = [typeLabel, ...tags]
-    .slice(0, 4)
+    .slice(0, 3)
     .map((t) => `#${t}`)
     .join("  ");
-  const subtitle = [locationText ?? (containsStray ? "流浪动物" : speciesLabels[animal.species]), tagLine]
+  const meta = [locationText ?? (containsStray ? "流浪动物" : speciesLabels[animal.species]), tagLine]
     .filter(Boolean)
     .join("  ·  ");
 
   return (
     <div>
-      {/* Time label above each card */}
-      <p className="mb-1.5 px-1 text-[11px] text-stone-400">{timeWithDate(record.occurred_at)}</p>
+      {/* Time label — tight to card, visually belongs to it */}
+      <p className="mb-1 text-[11px] text-stone-400">{timeWithDate(record.occurred_at)}</p>
 
       <article
-        className="cursor-pointer rounded-[18px] bg-white p-3 ring-1 ring-stone-100 active:bg-stone-50"
+        className="cursor-pointer overflow-hidden rounded-[18px] bg-white ring-1 ring-sand/70 active:bg-sand/20"
         onClick={onOpenPost}
       >
-        <div className="flex gap-3">
+        <div className="flex gap-3 p-3">
           {/* Thumbnail */}
           {firstImage ? (
             <div className="relative shrink-0">
               <img
-                className="h-[80px] w-[80px] rounded-[12px] object-cover"
+                className="h-[76px] w-[76px] rounded-xl object-cover"
                 src={firstImage}
                 alt={animal.name}
               />
@@ -96,13 +98,13 @@ function FeedCard({
               )}
             </div>
           ) : (
-            <div className="h-[80px] w-[80px] shrink-0 rounded-[12px] bg-stone-100" />
+            <div className="h-[76px] w-[76px] shrink-0 rounded-xl bg-sand" />
           )}
 
           {/* Text */}
           <div className="min-w-0 flex-1">
             <button
-              className="mb-0.5 block text-[14px] font-semibold leading-[1.4] text-stone-900"
+              className="mb-0.5 block text-[14px] font-semibold leading-snug text-ink"
               onClick={(e) => {
                 e.stopPropagation();
                 onOpenAnimal(animal.id);
@@ -111,7 +113,7 @@ function FeedCard({
               {title}
             </button>
             <p className="line-clamp-2 text-[13px] leading-[1.5] text-stone-500">{record.content}</p>
-            <p className="mt-1.5 truncate text-[11px] leading-4 text-stone-400">{subtitle}</p>
+            <p className="mt-1.5 truncate text-[11px] leading-4 text-stone-400">{meta}</p>
           </div>
         </div>
       </article>
@@ -139,8 +141,7 @@ function timeWithDate(value: string) {
   const hhmm = new Intl.DateTimeFormat("zh-CN", { hour: "2-digit", minute: "2-digit", hour12: false }).format(d);
   if (diffDays === 0) return `今天 ${hhmm}`;
   if (diffDays === 1) return `昨天 ${hhmm}`;
-  const md = new Intl.DateTimeFormat("zh-CN", { month: "long", day: "numeric" }).format(d);
-  return `${md} ${hhmm}`;
+  return `${new Intl.DateTimeFormat("zh-CN", { month: "long", day: "numeric" }).format(d)} ${hhmm}`;
 }
 
 function recordPriority(record: AnimalRecord, animalById: Map<string, Animal>) {
