@@ -122,7 +122,7 @@ export function AppRouter({ state, setState, route, setRoute, activeTab, goTabs,
         animal={selectedAnimal}
         state={state}
         initialType={route.type}
-        onBack={() => setRoute({ name: "detail", animalId: selectedAnimal.id, source: route.source })}
+        onBack={() => route.source ? setRoute({ name: "detail", animalId: selectedAnimal.id, source: route.source }) : goTabs("home")}
         onSave={(nextState, primaryAnimalId) =>
           saveAndReturnToDetail(
             withChangeLog(nextState, {
@@ -155,7 +155,7 @@ export function AppRouter({ state, setState, route, setRoute, activeTab, goTabs,
   }
 
   if (activeTab === "home") {
-    return <HomePage state={state} onOpenPost={(postId) => openPost(postId, { from: "home" })} onOpenAnimal={(animalId) => openAnimal(animalId, { from: "home" })} />;
+    return <HomePage state={state} onOpenPost={(postId) => openPost(postId, { from: "home" })} />;
   }
 
   if (activeTab === "map") {

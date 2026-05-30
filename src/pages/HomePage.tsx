@@ -3,7 +3,7 @@ import type { Animal, AnimalRecord, AppState } from "../types";
 import { recordTypeLabels, speciesLabels } from "../utils/labels";
 import { activeAnimals, animalIdsForRecord, primaryAnimalIdForRecord } from "../utils/storage";
 
-export function HomePage({ state, onOpenPost, onOpenAnimal }: { state: AppState; onOpenPost: (id: string) => void; onOpenAnimal: (id: string) => void }) {
+export function HomePage({ state, onOpenPost }: { state: AppState; onOpenPost: (id: string) => void }) {
   const animals = activeAnimals(state);
   const animalById = new Map(animals.map((a) => [a.id, a]));
   const tagById = new Map(state.tags.map((t) => [t.id, t.name]));
@@ -29,7 +29,6 @@ export function HomePage({ state, onOpenPost, onOpenAnimal }: { state: AppState;
               linkedAnimals={linkedAnimals}
               tags={tags}
               onOpenPost={() => onOpenPost(record.id)}
-              onOpenAnimal={onOpenAnimal}
             />
           );
         })}
@@ -44,14 +43,12 @@ function FeedCard({
   linkedAnimals,
   tags,
   onOpenPost,
-  onOpenAnimal,
 }: {
   record: AnimalRecord;
   animal: Animal;
   linkedAnimals: Animal[];
   tags: string[];
   onOpenPost: () => void;
-  onOpenAnimal: (id: string) => void;
 }) {
   const allAnimals = linkedAnimals.length ? linkedAnimals : [animal];
   const title = animalTitle(allAnimals);
@@ -103,15 +100,9 @@ function FeedCard({
 
           {/* Text */}
           <div className="min-w-0 flex-1">
-            <button
-              className="mb-0.5 block text-[14px] font-semibold leading-snug text-ink"
-              onClick={(e) => {
-                e.stopPropagation();
-                onOpenAnimal(animal.id);
-              }}
-            >
+            <span className="mb-0.5 block text-[14px] font-semibold leading-snug text-ink">
               {title}
-            </button>
+            </span>
             <p className="line-clamp-2 text-[13px] leading-[1.5] text-stone-500">{record.content}</p>
             <p className="mt-1.5 truncate text-[11px] leading-4 text-stone-400">{meta}</p>
           </div>

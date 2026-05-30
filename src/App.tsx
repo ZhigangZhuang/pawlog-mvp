@@ -22,7 +22,10 @@ export default function App() {
 
   const openRecordFlow = (type: RecordType) => {
     setAddOpen(false);
-    setRoute({ name: "selectAnimal", type });
+    const firstAnimal = activeAnimals(state)[0];
+    if (firstAnimal) {
+      setRoute({ name: "addRecord", animalId: firstAnimal.id, type });
+    }
   };
 
   return (
