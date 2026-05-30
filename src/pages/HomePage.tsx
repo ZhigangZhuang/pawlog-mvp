@@ -9,14 +9,14 @@ export function HomePage({ state, onOpenPost }: { state: AppState; onOpenPost: (
   const animalById = new Map(animals.map((animal) => [animal.id, animal]));
   const tagById = new Map(state.tags.map((tag) => [tag.id, tag.name]));
   const records = [...state.feedRecords]
-    .sort((a, b) => new Date(b.occurred_at).getTime() - new Date(a.occurred_at).getTime())
     .filter((record) => {
       const animal = animalById.get(primaryAnimalIdForRecord(record));
       return Boolean(animal);
-    });
+    })
+    .sort((a, b) => recordPriority(a, animalById) - recordPriority(b, animalById) || new Date(b.occurred_at).getTime() - new Date(a.occurred_at).getTime());
 
   return (
-    <AppShell title="毛孩动态">
+    <AppShell title="流浪毛孩动态">
       <div className="space-y-4 pb-24 pt-1">
         <div className="space-y-4">
           {records.map((record) => {
@@ -122,4 +122,20 @@ function safeLocationText(animals: Animal[], record: AnimalRecord) {
 function toRecordType(type: AnimalRecord["type"]) {
   if (type === "adoption" || type === "shared_update") return "note";
   return type;
+}
+
+function recordPriority(record: AnimalRecord, animalById: Map<string, Animal>) {
+  const animals = animalIdsForRecord(record).map((id) => animalById.get(id)).filter(isAnimal);
+  const hasStray = animals.some((animal) => animal.animal_origin === "stray");
+  if (!hasStray) return 4;
+  const needsHelp = animals.some((animal) => animal.rescue_status === "needs_help" || animal.health_status === "urgent" || animal.health_status === "injured" || animal.health_status === "suspected_injured");
+  if (needsHelp) return 0;
+  const needsTnr = animals.some((animal) => animal.neuter_status === "not_neutered" || animal.neuter_status === "unknown");
+  if (needsTnr) return 1;
+  if (animals.some((animal) => animal.adoption_status === "available")) return 2;
+  return 3;
+}
+
+function isAnimal(animal: Animal | undefined): animal is Animal {
+  return Boolean(animal);
 }

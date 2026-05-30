@@ -22,9 +22,10 @@ export function AddRecordPage({ animal, state, initialType, onBack, onSave }: Ad
   const containsStray = selectedAnimals.some((item) => item.animal_origin === "stray");
   const allowedTypes: RecordType[] =
     primaryAnimal.animal_origin === "owned_pet"
-      ? ["photo", "feeding", "health", "weight", "medical", "anniversary", "location", "note"]
-      : ["photo", "feeding", "health", "weight", "location", "neuter_status", "rescue_status", "note"];
-  const [type, setType] = useState<RecordType>(initialType && allowedTypes.includes(initialType) ? initialType : "photo");
+      ? ["photo", "feeding", "health", "location", "note", "weight", "anniversary", "medical"]
+      : ["location", "feeding", "health", "neuter_status", "rescue_status", "photo", "note", "weight"];
+  const preferredInitialType = primaryAnimal.animal_origin === "stray" && initialType === "photo" ? "location" : initialType;
+  const [type, setType] = useState<RecordType>(preferredInitialType && allowedTypes.includes(preferredInitialType) ? preferredInitialType : allowedTypes[0]);
   const [note, setNote] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const [weight, setWeight] = useState("");

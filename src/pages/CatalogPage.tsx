@@ -6,21 +6,23 @@ import type { Animal, AppState } from "../types";
 import { neuterLabels, speciesLabels } from "../utils/labels";
 import { activeAnimals, animalIdsForRecord } from "../utils/storage";
 
-type Filter = "all" | "owned_pet" | "stray" | "stray_cat" | "stray_dog" | "neutered" | "not_neutered" | "adoptable" | "shared" | "recordable" | "transferred" | "family";
+type Filter = "all" | "stray_cat" | "stray_dog" | "watching" | "not_neutered" | "neutered" | "rescue_needed" | "adoptable" | "shared" | "recordable" | "family" | "transferred" | "owned_pet" | "stray";
 
 const filters: Array<{ id: Filter; label: string }> = [
   { id: "all", label: "全部" },
-  { id: "owned_pet", label: "我的宠物" },
-  { id: "stray", label: "流浪动物" },
   { id: "stray_cat", label: "流浪猫" },
   { id: "stray_dog", label: "流浪狗" },
-  { id: "neutered", label: "已绝育" },
+  { id: "watching", label: "待观察" },
   { id: "not_neutered", label: "未绝育" },
+  { id: "neutered", label: "已绝育" },
+  { id: "rescue_needed", label: "需救助" },
   { id: "adoptable", label: "可领养" },
   { id: "shared", label: "分享给我的" },
   { id: "recordable", label: "允许我记录" },
-  { id: "transferred", label: "已送养" },
   { id: "family", label: "家庭/同窝" },
+  { id: "transferred", label: "已送养" },
+  { id: "owned_pet", label: "自家宠物" },
+  { id: "stray", label: "流浪动物" },
 ];
 
 export function CatalogPage({ state, onOpenAnimal }: { state: AppState; onOpenAnimal: (id: string) => void }) {
@@ -30,12 +32,15 @@ export function CatalogPage({ state, onOpenAnimal }: { state: AppState; onOpenAn
   const animals = activeAnimals(state);
   const shown = animals
     .filter((animal) => matchFilter(animal, filter, state))
-    .filter((animal) => `${animal.name}${animal.color || ""}${animal.features || ""}${animal.personality || ""}`.includes(query));
-  const ownedCount = animals.filter((animal) => animal.animal_origin === "owned_pet" && animal.animal_source !== "shared_to_me").length;
+    .filter((animal) => `${animal.name}${animal.color || ""}${animal.features || ""}${animal.personality || ""}`.includes(query))
+    .sort((a, b) => animalPriority(a) - animalPriority(b) || new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime());
   const strayCount = animals.filter((animal) => animal.animal_origin === "stray").length;
+  const watchingCount = animals.filter((animal) => animal.animal_origin === "stray" && animal.health_status && animal.health_status !== "normal").length;
+  const tnrCount = animals.filter((animal) => animal.animal_origin === "stray" && animal.neuter_status !== "confirmed_neutered").length;
+  const adoptableCount = animals.filter((animal) => animal.animal_origin === "stray" && animal.adoption_status === "available").length;
 
   return (
-    <AppShell title="图鉴" subtitle="统一的毛孩集合">
+    <AppShell title="图鉴" subtitle="流浪猫狗档案集合">
       <div className="space-y-4 pb-24">
         <div className="flex items-center gap-2 rounded-full bg-white px-4 py-3 text-sm text-stone-500 ring-1 ring-sand/80">
           <Search size={18} />
@@ -43,7 +48,7 @@ export function CatalogPage({ state, onOpenAnimal }: { state: AppState; onOpenAn
         </div>
 
         <p className="text-sm font-semibold text-stone-500">
-          共 {animals.length} 只毛孩 · {ownedCount} 只自家宠物 · {strayCount} 只流浪动物
+          已记录 {strayCount} 只流浪毛孩 · 待观察 {watchingCount} · 待绝育 {tnrCount} · 可领养 {adoptableCount}
         </p>
 
         <div className="flex gap-2 overflow-x-auto pb-1">
@@ -126,9 +131,11 @@ function matchFilter(animal: Animal, filter: Filter, state: AppState) {
   if (filter === "stray") return animal.animal_origin === "stray";
   if (filter === "stray_cat") return animal.animal_origin === "stray" && animal.species === "cat";
   if (filter === "stray_dog") return animal.animal_origin === "stray" && animal.species === "dog";
-  if (filter === "neutered") return animal.neuter_status === "confirmed_neutered";
-  if (filter === "not_neutered") return animal.neuter_status !== "confirmed_neutered";
-  if (filter === "adoptable") return animal.adoption_status === "available";
+  if (filter === "watching") return animal.animal_origin === "stray" && Boolean(animal.health_status && animal.health_status !== "normal");
+  if (filter === "neutered") return animal.animal_origin === "stray" && animal.neuter_status === "confirmed_neutered";
+  if (filter === "not_neutered") return animal.animal_origin === "stray" && animal.neuter_status !== "confirmed_neutered";
+  if (filter === "rescue_needed") return animal.animal_origin === "stray" && animal.rescue_status === "needs_help";
+  if (filter === "adoptable") return animal.animal_origin === "stray" && animal.adoption_status === "available";
   if (filter === "shared") return animal.animal_source === "shared_to_me";
   if (filter === "recordable") return animal.visibility === "shared_recordable";
   if (filter === "transferred") return animal.ownership_status === "transferred_out" || animal.ownership_status === "transferred_to_me";
@@ -148,4 +155,13 @@ function catalogTags(animal: Animal) {
   if (animal.ownership_status === "transferred_out") tags.push("已送养");
   if (animal.ownership_status === "transferred_to_me") tags.push("转交给我的");
   return tags;
+}
+
+function animalPriority(animal: Animal) {
+  if (animal.animal_origin !== "stray") return 5;
+  if (animal.rescue_status === "needs_help" || animal.health_status === "urgent" || animal.health_status === "injured" || animal.health_status === "suspected_injured") return 0;
+  if (animal.health_status && animal.health_status !== "normal") return 1;
+  if (animal.neuter_status !== "confirmed_neutered") return 2;
+  if (animal.adoption_status === "available") return 3;
+  return 4;
 }
