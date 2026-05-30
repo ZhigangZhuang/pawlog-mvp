@@ -15,7 +15,20 @@ import {
   mockWatches,
   mockWikiPages,
 } from "../data/mockData";
-import type { Animal, AnimalFamily, AnimalPhoto, AnimalRecord, AnimalRelationship, AnimalTransfer, AppState, ChangeLog, FeedRecordType, PostAnimal, StrayLocation, TimelineItem } from "../types";
+import type {
+  Animal,
+  AnimalFamily,
+  AnimalPhoto,
+  AnimalRecord,
+  AnimalRelationship,
+  AnimalTransfer,
+  AppState,
+  ChangeLog,
+  FeedRecordType,
+  PostAnimal,
+  StrayLocation,
+  TimelineItem,
+} from "../types";
 
 const STORAGE_KEY = "pawlog_app_state_v5_clean_feed";
 
@@ -35,7 +48,8 @@ export const saveState = (state: AppState) => {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
 };
 
-export const createId = (prefix: string) => `${prefix}_${Date.now()}_${Math.random().toString(16).slice(2)}`;
+export const createId = (prefix: string) =>
+  `${prefix}_${Date.now()}_${Math.random().toString(16).slice(2)}`;
 
 export const upsertAnimalUpdatedAt = (animal: Animal): Animal => ({
   ...animal,
@@ -43,9 +57,16 @@ export const upsertAnimalUpdatedAt = (animal: Animal): Animal => ({
 });
 
 export const sortTimeline = (items: TimelineItem[]) =>
-  [...items].sort((a, b) => new Date(b.occurred_at).getTime() - new Date(a.occurred_at).getTime());
+  [...items].sort(
+    (a, b) =>
+      new Date(b.occurred_at).getTime() - new Date(a.occurred_at).getTime(),
+  );
 
-export const activeAnimals = (state: AppState) => state.animals.filter((animal) => animal.archive_status !== "merged" && animal.archive_status !== "deleted");
+export const activeAnimals = (state: AppState) =>
+  state.animals.filter(
+    (animal) =>
+      animal.archive_status !== "merged" && animal.archive_status !== "deleted",
+  );
 
 const normalizeState = (state: Partial<AppState>): AppState => {
   const fallback = createInitialState();
@@ -54,21 +75,36 @@ const normalizeState = (state: Partial<AppState>): AppState => {
     aliases: animal.aliases || [],
     visibility: animal.visibility || "private",
     animal_source: animal.animal_source || "created_by_me",
-    ownership_status: animal.ownership_status || (animal.animal_source === "shared_to_me" ? "shared_to_me" : "owned_by_me"),
+    ownership_status:
+      animal.ownership_status ||
+      (animal.animal_source === "shared_to_me"
+        ? "shared_to_me"
+        : "owned_by_me"),
     archive_status: animal.archive_status || "active",
   }));
   const animalById = new Map(animals.map((animal) => [animal.id, animal]));
-  const locations = (state.locations || fallback.locations).map((location) => normalizeLocation(location, animalById));
-  const feedRecords = (state.feedRecords || fallback.feedRecords).map(normalizeRecordAnimals);
+  const locations = (state.locations || fallback.locations).map((location) =>
+    normalizeLocation(location, animalById),
+  );
+  const feedRecords = (state.feedRecords || fallback.feedRecords).map(
+    normalizeRecordAnimals,
+  );
 
   return {
     animals,
     postAnimals: state.postAnimals || postAnimalsFromRecords(feedRecords),
-    animalRelationships: state.animalRelationships || fallback.animalRelationships,
+    animalRelationships:
+      state.animalRelationships || fallback.animalRelationships,
     animalFamilies: state.animalFamilies || fallback.animalFamilies,
     animalTransfers: state.animalTransfers || fallback.animalTransfers,
-    timeline: (state.timeline || fallback.timeline).map((item) => ({ ...item, source: item.source || { source_type: "self" } })),
-    photos: (state.photos || fallback.photos).map((photo) => ({ ...photo, source: photo.source || { source_type: "self" } })),
+    timeline: (state.timeline || fallback.timeline).map((item) => ({
+      ...item,
+      source: item.source || { source_type: "self" },
+    })),
+    photos: (state.photos || fallback.photos).map((photo) => ({
+      ...photo,
+      source: photo.source || { source_type: "self" },
+    })),
     locations,
     mergeLogs: state.mergeLogs || [],
     sharedPackages: state.sharedPackages || fallback.sharedPackages,
@@ -86,16 +122,26 @@ const normalizeState = (state: Partial<AppState>): AppState => {
   };
 };
 
-const normalizeLocation = (location: StrayLocation, animalById: Map<string, Animal>): StrayLocation => {
+const normalizeLocation = (
+  location: StrayLocation,
+  animalById: Map<string, Animal>,
+): StrayLocation => {
   const animal = animalById.get(location.animal_id);
-  const animalOrigin = location.animal_origin || animal?.animal_origin || "stray";
-  const isSensitive = animalOrigin === "stray" && (location.is_sensitive || location.precision_level === "exact");
+  const animalOrigin =
+    location.animal_origin || animal?.animal_origin || "stray";
+  const isSensitive =
+    animalOrigin === "stray" &&
+    (location.is_sensitive || location.precision_level === "exact");
   return {
     ...location,
     animal_origin: animalOrigin,
-    type: location.type || (animalOrigin === "stray" ? "stray_seen" : "pet_photo_place"),
+    type:
+      location.type ||
+      (animalOrigin === "stray" ? "stray_seen" : "pet_photo_place"),
     name: location.name || location.location_name,
-    precision_level: isSensitive ? "text_only" : location.precision_level || "blurred",
+    precision_level: isSensitive
+      ? "text_only"
+      : location.precision_level || "blurred",
     is_sensitive: isSensitive,
     visibility: location.visibility || "private",
     created_by: location.created_by || "user_1",
@@ -105,11 +151,14 @@ const normalizeLocation = (location: StrayLocation, animalById: Map<string, Anim
 };
 
 export const animalIdsForRecord = (record: AnimalRecord) => {
-  const ids = record.animal_ids?.length ? record.animal_ids : [record.primary_animal_id || record.animal_id];
+  const ids = record.animal_ids?.length
+    ? record.animal_ids
+    : [record.primary_animal_id || record.animal_id];
   return Array.from(new Set(ids.filter(Boolean)));
 };
 
-export const primaryAnimalIdForRecord = (record: AnimalRecord) => record.primary_animal_id || record.animal_id || animalIdsForRecord(record)[0];
+export const primaryAnimalIdForRecord = (record: AnimalRecord) =>
+  record.primary_animal_id || record.animal_id || animalIdsForRecord(record)[0];
 
 const normalizeRecordAnimals = (record: AnimalRecord): AnimalRecord => {
   const primary = record.primary_animal_id || record.animal_id;
@@ -128,12 +177,19 @@ const postAnimalsFromRecords = (records: AnimalRecord[]): PostAnimal[] =>
       id: `pa_${record.id}_${animalId}`,
       post_id: record.id,
       animal_id: animalId,
-      role_in_post: animalId === primaryAnimalIdForRecord(record) ? "main" : "appears_with",
+      role_in_post:
+        animalId === primaryAnimalIdForRecord(record) ? "main" : "appears_with",
       created_at: record.created_at,
     })),
   );
 
-export const withChangeLog = (state: AppState, log: Omit<ChangeLog, "id" | "created_at" | "created_by"> & { created_by?: string; created_at?: string }): AppState => ({
+export const withChangeLog = (
+  state: AppState,
+  log: Omit<ChangeLog, "id" | "created_at" | "created_by"> & {
+    created_by?: string;
+    created_at?: string;
+  },
+): AppState => ({
   ...state,
   changeLogs: [
     {
@@ -417,7 +473,10 @@ const buildDemoState = (): AppState => {
       note: "封面照片",
       is_cover: true,
       created_at: animal.updated_at,
-      source: { source_type: animal.animal_source === "shared_to_me" ? "shared_link" : "self" } as const,
+      source: {
+        source_type:
+          animal.animal_source === "shared_to_me" ? "shared_link" : "self",
+      } as const,
     })),
     ...feedRecords.flatMap((record) =>
       animalIdsForRecord(record).flatMap((animalId) =>
@@ -428,7 +487,9 @@ const buildDemoState = (): AppState => {
           taken_at: record.occurred_at,
           note: record.content,
           created_at: record.created_at,
-          source: { source_type: record.source === "me" ? "self" : "shared_link" } as const,
+          source: {
+            source_type: record.source === "me" ? "self" : "shared_link",
+          } as const,
         })),
       ),
     ),
@@ -438,7 +499,10 @@ const buildDemoState = (): AppState => {
     animalIdsForRecord(record).map((animalId) => ({
       id: `tl_${record.id}_${animalId}`,
       animal_id: animalId,
-      type: record.type === "shared_update" || record.type === "adoption" ? "note" : record.type,
+      type:
+        record.type === "shared_update" || record.type === "adoption"
+          ? "note"
+          : record.type,
       title: recordTitle(record.type),
       description: record.content,
       image_url: record.images[0],
@@ -452,25 +516,36 @@ const buildDemoState = (): AppState => {
     .filter((record) => record.location_text)
     .slice(0, 36)
     .map((record, index) => {
-      const animal = animals.find((item) => item.id === primaryAnimalIdForRecord(record))!;
+      const animal = animals.find(
+        (item) => item.id === primaryAnimalIdForRecord(record),
+      )!;
       return {
         id: `loc_demo_${index}`,
         animal_id: animal.id,
         animal_origin: animal.animal_origin,
-        type: animal.animal_origin === "stray" ? "stray_seen" : "pet_photo_place",
+        type:
+          animal.animal_origin === "stray" ? "stray_seen" : "pet_photo_place",
         location_name: record.location_text || "未命名地点",
         name: record.location_text,
-        latitude: animal.animal_origin === "stray" ? undefined : 31.22 + index * 0.001,
-        longitude: animal.animal_origin === "stray" ? undefined : 121.47 + index * 0.001,
-        precision_level: animal.animal_origin === "stray" ? "text_only" : "blurred",
-        address_text: animal.animal_origin === "stray" ? "流浪动物位置已模糊" : record.location_text,
+        latitude:
+          animal.animal_origin === "stray" ? undefined : 31.22 + index * 0.001,
+        longitude:
+          animal.animal_origin === "stray" ? undefined : 121.47 + index * 0.001,
+        precision_level:
+          animal.animal_origin === "stray" ? "text_only" : "blurred",
+        address_text:
+          animal.animal_origin === "stray"
+            ? "流浪动物位置已模糊"
+            : record.location_text,
         is_sensitive: animal.animal_origin === "stray" && index % 4 === 0,
         visibility: "private",
         seen_at: record.occurred_at,
         created_by: record.source === "me" ? "user_1" : "shared_user",
         created_at: record.created_at,
         updated_at: record.created_at,
-        source: { source_type: record.source === "me" ? "self" : "shared_link" },
+        source: {
+          source_type: record.source === "me" ? "self" : "shared_link",
+        },
       };
     });
 
@@ -535,17 +610,56 @@ function animalOf({
     species,
     breed,
     gender: index % 3 === 0 ? "female" : index % 3 === 1 ? "male" : "unknown",
-    birthday: origin === "owned_pet" ? `202${index % 5}-0${(index % 8) + 1}-12` : undefined,
-    home_date: origin === "owned_pet" ? `202${index % 5}-0${(index % 8) + 1}-20` : undefined,
-    age_stage: origin === "stray" ? (index % 6 === 0 ? "senior" : index % 5 === 0 ? "young" : "adult") : undefined,
+    birthday:
+      origin === "owned_pet"
+        ? `202${index % 5}-0${(index % 8) + 1}-12`
+        : undefined,
+    home_date:
+      origin === "owned_pet"
+        ? `202${index % 5}-0${(index % 8) + 1}-20`
+        : undefined,
+    age_stage:
+      origin === "stray"
+        ? index % 6 === 0
+          ? "senior"
+          : index % 5 === 0
+            ? "young"
+            : "adult"
+        : undefined,
     color,
     features,
     personality,
     is_friendly: index % 4 !== 1,
-    neuter_status: origin === "stray" ? (index % 3 === 0 ? "confirmed_neutered" : index % 3 === 1 ? "not_neutered" : "unknown") : index % 2 ? "not_neutered" : "confirmed_neutered",
-    health_status: index % 13 === 0 ? "watching" : index % 17 === 0 ? "suspected_injured" : "normal",
-    rescue_status: origin === "stray" ? (index % 7 === 0 ? "needs_help" : index % 5 === 0 ? "observing" : "none") : undefined,
-    adoption_status: origin === "stray" && index % 9 === 0 ? "available" : origin === "stray" ? "not_available" : undefined,
+    neuter_status:
+      origin === "stray"
+        ? index % 3 === 0
+          ? "confirmed_neutered"
+          : index % 3 === 1
+            ? "not_neutered"
+            : "unknown"
+        : index % 2
+          ? "not_neutered"
+          : "confirmed_neutered",
+    health_status:
+      index % 13 === 0
+        ? "watching"
+        : index % 17 === 0
+          ? "suspected_injured"
+          : "normal",
+    rescue_status:
+      origin === "stray"
+        ? index % 7 === 0
+          ? "needs_help"
+          : index % 5 === 0
+            ? "observing"
+            : "none"
+        : undefined,
+    adoption_status:
+      origin === "stray" && index % 9 === 0
+        ? "available"
+        : origin === "stray"
+          ? "not_available"
+          : undefined,
     danger_level: origin === "stray" && index % 7 === 0 ? "high" : "low",
     cover_image_url: image,
     aliases: [],
@@ -568,7 +682,16 @@ function makeFeedRecords(animals: Animal[], now: Date): AnimalRecord[] {
     "分享给我的新动态，状态稳定。",
     "今天又见到了，图鉴记录 +1。",
   ];
-  const places = ["家里", "北门附近", "河边公园", "食堂后门", "停车场", "花坛附近", "便利店门口", "小区东门"];
+  const places = [
+    "家里",
+    "北门附近",
+    "河边公园",
+    "食堂后门",
+    "停车场",
+    "花坛附近",
+    "便利店门口",
+    "小区东门",
+  ];
   const byId = new Map(animals.map((animal) => [animal.id, animal]));
   const scenarioRecords: AnimalRecord[] = [
     multiRecord({
@@ -577,7 +700,8 @@ function makeFeedRecords(animals: Animal[], now: Date): AnimalRecord[] {
       animalIds: ["family_mama", "family_white_kitten", "family_black_kitten"],
       animals: byId,
       type: "family",
-      content: "今天在公园草地看到猫猫一家三口，猫妈妈一直护着两只小猫，两个小家伙精神都不错。",
+      content:
+        "今天在公园草地看到猫猫一家三口，猫妈妈一直护着两只小猫，两个小家伙精神都不错。",
       occurredAt: "2026-05-27T18:30:00",
       locationText: "公园草地附近",
       tagIds: ["tag_group_watch", "tag_group_private"],
@@ -589,7 +713,8 @@ function makeFeedRecords(animals: Animal[], now: Date): AnimalRecord[] {
       animalIds: ["pet_1", "pet_7", "kitten_zhima", "kitten_huajuan"],
       animals: byId,
       type: "family",
-      content: "奶盖今天终于生了三只小猫，糯米、芝麻崽和花卷崽都很精神，先一起收进家庭记录里。",
+      content:
+        "奶盖今天终于生了三只小猫，糯米、芝麻崽和花卷崽都很精神，先一起收进家庭记录里。",
       occurredAt: "2026-05-26T10:20:00",
       locationText: "家里",
       tagIds: ["tag_personal_fav"],
@@ -601,7 +726,8 @@ function makeFeedRecords(animals: Animal[], now: Date): AnimalRecord[] {
       animalIds: ["kitten_zhima", "pet_1"],
       animals: byId,
       type: "adoption",
-      content: "芝麻崽到新家第一天，已经敢从航空箱里出来探索了。朋友发来了照片，我还能继续看到它长大。",
+      content:
+        "芝麻崽到新家第一天，已经敢从航空箱里出来探索了。朋友发来了照片，我还能继续看到它长大。",
       occurredAt: "2026-05-27T16:00:00",
       locationText: "朋友 A 家",
       tagIds: ["tag_personal_fav"],
@@ -627,21 +753,44 @@ function makeFeedRecords(animals: Animal[], now: Date): AnimalRecord[] {
     const animal = animals[index % animals.length];
     const date = new Date(now.getTime() - index * 1000 * 60 * 60 * 5);
     const image = imageFor(animal.species, index);
-    const type = (["photo", "feeding", "health", "location", "note", "weight", "anniversary", "shared_update"] as const)[index % 8];
-    const source: AnimalRecord["source"] = animal.animal_source === "shared_to_me" ? "shared_user" : "me";
+    const type = (
+      [
+        "photo",
+        "feeding",
+        "health",
+        "location",
+        "note",
+        "weight",
+        "anniversary",
+        "shared_update",
+      ] as const
+    )[index % 8];
+    const source: AnimalRecord["source"] =
+      animal.animal_source === "shared_to_me" ? "shared_user" : "me";
     const tags = tagsForAnimal(animal);
-    const visibility: AnimalRecord["visibility"] = animal.visibility === "public_card" ? "public_card" : animal.visibility === "private" ? "private" : "shared";
+    const visibility: AnimalRecord["visibility"] =
+      animal.visibility === "public_card"
+        ? "public_card"
+        : animal.visibility === "private"
+          ? "private"
+          : "shared";
     return {
       id: `feed_${index + 1}`,
       animal_id: animal.id,
       primary_animal_id: animal.id,
       animal_ids: [animal.id],
       type,
-      images: index % 6 === 0 ? [image, imageFor(animal.species, index + 1)] : [image],
+      images:
+        index % 6 === 0
+          ? [image, imageFor(animal.species, index + 1)]
+          : [image],
       content: contents[index % contents.length],
       occurred_at: date.toISOString(),
       location_text: places[index % places.length],
-      location_privacy: animal.animal_origin === "stray" ? ("blurred" as const) : ("exact_private" as const),
+      location_privacy:
+        animal.animal_origin === "stray"
+          ? ("blurred" as const)
+          : ("exact_private" as const),
       tag_ids: tags,
       created_by: source === "me" ? "user_1" : "shared_user",
       source,
@@ -680,7 +829,9 @@ function multiRecord({
   source?: AnimalRecord["source"];
   visibility?: AnimalRecord["visibility"];
 }): AnimalRecord {
-  const containsStray = animalIds.some((animalId) => animals.get(animalId)?.animal_origin === "stray");
+  const containsStray = animalIds.some(
+    (animalId) => animals.get(animalId)?.animal_origin === "stray",
+  );
   return {
     id,
     animal_id: primaryAnimalId,
@@ -720,7 +871,10 @@ function makeWatches(animals: Animal[]) {
       id: `watch_demo_${animal.id}`,
       user_id: "user_1",
       animal_id: animal.id,
-      level: index % 2 === 0 ? ("important_only" as const) : ("all_updates" as const),
+      level:
+        index % 2 === 0
+          ? ("important_only" as const)
+          : ("all_updates" as const),
       created_at: "2026-05-27T10:00:00",
     }));
 }
@@ -728,20 +882,97 @@ function makeWatches(animals: Animal[]) {
 function makeAnimalRelationships(): AnimalRelationship[] {
   const now = "2026-05-27T18:30:00";
   return [
-    relationship("rel_mama_white", "family_mama", "family_white_kitten", "parent", "猫妈妈的孩子", now),
-    relationship("rel_mama_black", "family_mama", "family_black_kitten", "parent", "猫妈妈的孩子", now),
-    relationship("rel_white_black", "family_white_kitten", "family_black_kitten", "same_litter", "同窝小猫", now),
-    relationship("rel_naigai_nuomi", "pet_1", "pet_7", "parent", "奶盖的孩子，留在家里", "2026-05-26T10:20:00"),
-    relationship("rel_naigai_zhima", "pet_1", "kitten_zhima", "parent", "奶盖的孩子，已送养给朋友 A", "2026-05-26T10:20:00"),
-    relationship("rel_naigai_huajuan", "pet_1", "kitten_huajuan", "parent", "奶盖的孩子，已送养给朋友 B", "2026-05-26T10:20:00"),
-    relationship("rel_nuomi_zhima", "pet_7", "kitten_zhima", "same_litter", "同窝兄妹", "2026-05-26T10:20:00"),
-    relationship("rel_nuomi_huajuan", "pet_7", "kitten_huajuan", "same_litter", "同窝兄妹", "2026-05-26T10:20:00"),
-    relationship("rel_zhima_huajuan", "kitten_zhima", "kitten_huajuan", "same_litter", "同窝兄妹", "2026-05-26T10:20:00"),
-    relationship("rel_doubao_lucky", "pet_2", "shared_2", "friend", "经常一起在公园散步", "2026-05-27T17:10:00"),
+    relationship(
+      "rel_mama_white",
+      "family_mama",
+      "family_white_kitten",
+      "parent",
+      "猫妈妈的孩子",
+      now,
+    ),
+    relationship(
+      "rel_mama_black",
+      "family_mama",
+      "family_black_kitten",
+      "parent",
+      "猫妈妈的孩子",
+      now,
+    ),
+    relationship(
+      "rel_white_black",
+      "family_white_kitten",
+      "family_black_kitten",
+      "same_litter",
+      "同窝小猫",
+      now,
+    ),
+    relationship(
+      "rel_naigai_nuomi",
+      "pet_1",
+      "pet_7",
+      "parent",
+      "奶盖的孩子，留在家里",
+      "2026-05-26T10:20:00",
+    ),
+    relationship(
+      "rel_naigai_zhima",
+      "pet_1",
+      "kitten_zhima",
+      "parent",
+      "奶盖的孩子，已送养给朋友 A",
+      "2026-05-26T10:20:00",
+    ),
+    relationship(
+      "rel_naigai_huajuan",
+      "pet_1",
+      "kitten_huajuan",
+      "parent",
+      "奶盖的孩子，已送养给朋友 B",
+      "2026-05-26T10:20:00",
+    ),
+    relationship(
+      "rel_nuomi_zhima",
+      "pet_7",
+      "kitten_zhima",
+      "same_litter",
+      "同窝兄妹",
+      "2026-05-26T10:20:00",
+    ),
+    relationship(
+      "rel_nuomi_huajuan",
+      "pet_7",
+      "kitten_huajuan",
+      "same_litter",
+      "同窝兄妹",
+      "2026-05-26T10:20:00",
+    ),
+    relationship(
+      "rel_zhima_huajuan",
+      "kitten_zhima",
+      "kitten_huajuan",
+      "same_litter",
+      "同窝兄妹",
+      "2026-05-26T10:20:00",
+    ),
+    relationship(
+      "rel_doubao_lucky",
+      "pet_2",
+      "shared_2",
+      "friend",
+      "经常一起在公园散步",
+      "2026-05-27T17:10:00",
+    ),
   ];
 }
 
-function relationship(id: string, from: string, to: string, relation: AnimalRelationship["relation_type"], note: string, createdAt: string): AnimalRelationship {
+function relationship(
+  id: string,
+  from: string,
+  to: string,
+  relation: AnimalRelationship["relation_type"],
+  note: string,
+  createdAt: string,
+): AnimalRelationship {
   return {
     id,
     from_animal_id: from,
@@ -759,7 +990,11 @@ function makeAnimalFamilies(): AnimalFamily[] {
       id: "family_park_cats",
       name: "公园猫猫一家三口",
       description: "猫妈妈和两只幼崽，经常在公园草地附近出现。",
-      member_animal_ids: ["family_mama", "family_white_kitten", "family_black_kitten"],
+      member_animal_ids: [
+        "family_mama",
+        "family_white_kitten",
+        "family_black_kitten",
+      ],
       type: "family",
       created_by: "user_1",
       created_at: "2026-05-27T18:30:00",
@@ -808,10 +1043,12 @@ function makeAnimalTransfers(): AnimalTransfer[] {
 function tagsForAnimal(animal: Animal) {
   const tags = [];
   if (animal.animal_origin === "owned_pet") tags.push("tag_personal_fav");
-  if (animal.neuter_status === "confirmed_neutered") tags.push("tag_group_done");
+  if (animal.neuter_status === "confirmed_neutered")
+    tags.push("tag_group_done");
   if (animal.neuter_status === "not_neutered") tags.push("tag_group_tnr");
   if (animal.rescue_status === "needs_help") tags.push("tag_group_help");
-  if (animal.health_status && animal.health_status !== "normal") tags.push("tag_group_watch");
+  if (animal.health_status && animal.health_status !== "normal")
+    tags.push("tag_group_watch");
   if (animal.animal_origin === "stray") tags.push("tag_group_private");
   return tags.length ? tags : ["tag_personal_fav"];
 }

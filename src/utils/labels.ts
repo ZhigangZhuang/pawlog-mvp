@@ -1,4 +1,13 @@
-import type { AnimalOrigin, Gender, HealthStatus, LocationType, NeuterStatus, RecordType, RescueStatus, Species } from "../types";
+import type {
+  AnimalOrigin,
+  Gender,
+  HealthStatus,
+  LocationType,
+  NeuterStatus,
+  RecordType,
+  RescueStatus,
+  Species,
+} from "../types";
 
 export const speciesLabels: Record<Species, string> = {
   cat: "猫",
@@ -112,7 +121,12 @@ export const getAgeText = (birthday?: string, ageStage?: string) => {
   }
   const birth = new Date(birthday);
   const now = new Date("2026-05-27T12:00:00");
-  const months = Math.max(0, (now.getFullYear() - birth.getFullYear()) * 12 + now.getMonth() - birth.getMonth());
+  const months = Math.max(
+    0,
+    (now.getFullYear() - birth.getFullYear()) * 12 +
+      now.getMonth() -
+      birth.getMonth(),
+  );
   if (months < 12) return `${months} 个月`;
   return `${Math.floor(months / 12)} 岁 ${months % 12} 个月`;
 };

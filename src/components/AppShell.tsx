@@ -11,7 +11,15 @@ type AppShellProps = {
   children: ReactNode;
 };
 
-export function AppShell({ title = "毛孩档案", subtitle, canGoBack, onBack, onCreate, actions, children }: AppShellProps) {
+export function AppShell({
+  title = "毛孩档案",
+  subtitle,
+  canGoBack,
+  onBack,
+  onCreate,
+  actions,
+  children,
+}: AppShellProps) {
   return (
     <div className="min-h-screen bg-cream text-ink">
       <div className="mx-auto min-h-screen w-full max-w-md bg-cream shadow-soft">
@@ -28,7 +36,9 @@ export function AppShell({ title = "毛孩档案", subtitle, canGoBack, onBack, 
             ) : null}
             <div className="min-w-0 flex-1">
               <h1 className="truncate text-xl font-bold">{title}</h1>
-              {subtitle ? <p className="truncate text-sm text-stone-500">{subtitle}</p> : null}
+              {subtitle ? (
+                <p className="truncate text-sm text-stone-500">{subtitle}</p>
+              ) : null}
             </div>
             {onCreate ? (
               <button

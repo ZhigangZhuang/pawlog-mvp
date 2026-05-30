@@ -12,12 +12,22 @@ export type Route =
   | { name: "post"; postId: string; source?: RouteSource }
   | { name: "create" }
   | { name: "detail"; animalId: string; source?: RouteSource }
-  | { name: "addRecord"; animalId: string; type?: RecordType; source?: RouteSource }
+  | {
+      name: "addRecord";
+      animalId: string;
+      type?: RecordType;
+      source?: RouteSource;
+    }
   | { name: "share"; animalId: string }
   | { name: "merge"; animalId: string };
 
 export function getRouteAnimalId(route: Route) {
-  if (route.name === "detail" || route.name === "addRecord" || route.name === "share" || route.name === "merge") {
+  if (
+    route.name === "detail" ||
+    route.name === "addRecord" ||
+    route.name === "share" ||
+    route.name === "merge"
+  ) {
     return route.animalId;
   }
 

@@ -30,8 +30,20 @@ export default function App() {
 
   return (
     <>
-      <AppRouter state={state} setState={setState} route={route} setRoute={setRoute} activeTab={activeTab} goTabs={goTabs} setNewAnimal={setNewAnimal} />
-      <BottomTabBar activeTab={activeTab} onTabChange={goTabs} onAdd={() => setAddOpen(true)} />
+      <AppRouter
+        state={state}
+        setState={setState}
+        route={route}
+        setRoute={setRoute}
+        activeTab={activeTab}
+        goTabs={goTabs}
+        setNewAnimal={setNewAnimal}
+      />
+      <BottomTabBar
+        activeTab={activeTab}
+        onTabChange={goTabs}
+        onAdd={() => setAddOpen(true)}
+      />
       <AddActionSheet
         open={addOpen}
         onClose={() => setAddOpen(false)}

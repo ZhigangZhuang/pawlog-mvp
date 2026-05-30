@@ -1,7 +1,15 @@
 import { Camera, ShieldCheck } from "lucide-react";
 import { useState } from "react";
 import { AppShell } from "../components/AppShell";
-import type { Animal, AnimalOrigin, AppState, Gender, HealthStatus, NeuterStatus, Species } from "../types";
+import type {
+  Animal,
+  AnimalOrigin,
+  AppState,
+  Gender,
+  HealthStatus,
+  NeuterStatus,
+  Species,
+} from "../types";
 import { createId } from "../utils/storage";
 
 type CreateAnimalPageProps = {
@@ -12,7 +20,11 @@ type CreateAnimalPageProps = {
 
 const nowIso = () => new Date().toISOString();
 
-export function CreateAnimalPage({ onBack, onSave, state }: CreateAnimalPageProps) {
+export function CreateAnimalPage({
+  onBack,
+  onSave,
+  state,
+}: CreateAnimalPageProps) {
   const [origin, setOrigin] = useState<AnimalOrigin>("owned_pet");
   const [name, setName] = useState("");
   const [species, setSpecies] = useState<Species>("cat");
@@ -76,9 +88,13 @@ export function CreateAnimalPage({ onBack, onSave, state }: CreateAnimalPageProp
           animal_id: id,
           type: "note",
           images: animal.cover_image_url ? [animal.cover_image_url] : [],
-          content: origin === "stray" ? `今日加新：${animal.name}，这只毛孩已经加入私密图鉴。` : `${animal.name} 的成长记录开始啦。`,
+          content:
+            origin === "stray"
+              ? `今日加新：${animal.name}，这只毛孩已经加入私密图鉴。`
+              : `${animal.name} 的成长记录开始啦。`,
           occurred_at: createdAt,
-          location_text: origin === "stray" && locationName ? locationName : undefined,
+          location_text:
+            origin === "stray" && locationName ? locationName : undefined,
           location_privacy: origin === "stray" ? "blurred" : "none",
           tag_ids: [],
           created_by: "user_1",
@@ -94,7 +110,10 @@ export function CreateAnimalPage({ onBack, onSave, state }: CreateAnimalPageProp
           animal_id: id,
           type: "note",
           title: "创建档案",
-          description: origin === "stray" ? "地点默认仅自己可见，分享时自动过滤敏感信息" : "开始记录成长、健康和纪念日",
+          description:
+            origin === "stray"
+              ? "地点默认仅自己可见，分享时自动过滤敏感信息"
+              : "开始记录成长、健康和纪念日",
           source: { source_type: "self" },
           occurred_at: createdAt,
           created_at: createdAt,
@@ -144,7 +163,12 @@ export function CreateAnimalPage({ onBack, onSave, state }: CreateAnimalPageProp
   };
 
   return (
-    <AppShell title="新建档案" subtitle="先区分自家宠物或流浪动物" canGoBack onBack={onBack}>
+    <AppShell
+      title="新建档案"
+      subtitle="先区分自家宠物或流浪动物"
+      canGoBack
+      onBack={onBack}
+    >
       <div className="space-y-5">
         <div className="grid grid-cols-2 gap-3">
           <button
@@ -171,7 +195,9 @@ export function CreateAnimalPage({ onBack, onSave, state }: CreateAnimalPageProp
         ) : null}
 
         <div className="rounded-lg bg-white p-4 ring-1 ring-sand/70">
-          <label className="mb-2 block text-sm font-semibold">封面照片 URL，可留空</label>
+          <label className="mb-2 block text-sm font-semibold">
+            封面照片 URL，可留空
+          </label>
           <div className="flex gap-3">
             <div className="grid h-16 w-16 shrink-0 place-items-center rounded-lg bg-sand text-stone-500">
               <Camera size={22} />
@@ -187,17 +213,27 @@ export function CreateAnimalPage({ onBack, onSave, state }: CreateAnimalPageProp
 
         <FormGrid>
           <Field label={origin === "owned_pet" ? "名字" : "昵称"}>
-            <input value={name} onChange={(event) => setName(event.target.value)} placeholder="例如：奶盖" />
+            <input
+              value={name}
+              onChange={(event) => setName(event.target.value)}
+              placeholder="例如：奶盖"
+            />
           </Field>
           <Field label="物种">
-            <select value={species} onChange={(event) => setSpecies(event.target.value as Species)}>
+            <select
+              value={species}
+              onChange={(event) => setSpecies(event.target.value as Species)}
+            >
               <option value="cat">猫</option>
               <option value="dog">狗</option>
               <option value="other">其他</option>
             </select>
           </Field>
           <Field label="性别">
-            <select value={gender} onChange={(event) => setGender(event.target.value as Gender)}>
+            <select
+              value={gender}
+              onChange={(event) => setGender(event.target.value as Gender)}
+            >
               <option value="unknown">未知</option>
               <option value="male">公</option>
               <option value="female">母</option>
@@ -206,19 +242,36 @@ export function CreateAnimalPage({ onBack, onSave, state }: CreateAnimalPageProp
           {origin === "owned_pet" ? (
             <>
               <Field label="品种，可选">
-                <input value={breed} onChange={(event) => setBreed(event.target.value)} placeholder="例如：英短" />
+                <input
+                  value={breed}
+                  onChange={(event) => setBreed(event.target.value)}
+                  placeholder="例如：英短"
+                />
               </Field>
               <Field label="生日，可选">
-                <input type="date" value={birthday} onChange={(event) => setBirthday(event.target.value)} />
+                <input
+                  type="date"
+                  value={birthday}
+                  onChange={(event) => setBirthday(event.target.value)}
+                />
               </Field>
               <Field label="到家日期，可选">
-                <input type="date" value={homeDate} onChange={(event) => setHomeDate(event.target.value)} />
+                <input
+                  type="date"
+                  value={homeDate}
+                  onChange={(event) => setHomeDate(event.target.value)}
+                />
               </Field>
             </>
           ) : (
             <>
               <Field label="年龄阶段">
-                <select value={ageStage} onChange={(event) => setAgeStage(event.target.value as Animal["age_stage"])}>
+                <select
+                  value={ageStage}
+                  onChange={(event) =>
+                    setAgeStage(event.target.value as Animal["age_stage"])
+                  }
+                >
                   <option value="unknown">未知</option>
                   <option value="baby">幼崽</option>
                   <option value="young">青年</option>
@@ -227,27 +280,51 @@ export function CreateAnimalPage({ onBack, onSave, state }: CreateAnimalPageProp
                 </select>
               </Field>
               <Field label="明显特征">
-                <input value={features} onChange={(event) => setFeatures(event.target.value)} placeholder="剪耳、尾巴、伤痕等" />
+                <input
+                  value={features}
+                  onChange={(event) => setFeatures(event.target.value)}
+                  placeholder="剪耳、尾巴、伤痕等"
+                />
               </Field>
               <Field label="初次发现地点，可选">
-                <input value={locationName} onChange={(event) => setLocationName(event.target.value)} placeholder="例如：东门附近" />
+                <input
+                  value={locationName}
+                  onChange={(event) => setLocationName(event.target.value)}
+                  placeholder="例如：东门附近"
+                />
               </Field>
             </>
           )}
           <Field label="毛色">
-            <input value={color} onChange={(event) => setColor(event.target.value)} placeholder="例如：橘白" />
+            <input
+              value={color}
+              onChange={(event) => setColor(event.target.value)}
+              placeholder="例如：橘白"
+            />
           </Field>
           <Field label="性格">
-            <input value={personality} onChange={(event) => setPersonality(event.target.value)} placeholder="例如：亲人但胆小" />
+            <input
+              value={personality}
+              onChange={(event) => setPersonality(event.target.value)}
+              placeholder="例如：亲人但胆小"
+            />
           </Field>
           <Field label="是否亲人">
-            <select value={String(isFriendly)} onChange={(event) => setIsFriendly(event.target.value === "true")}>
+            <select
+              value={String(isFriendly)}
+              onChange={(event) => setIsFriendly(event.target.value === "true")}
+            >
               <option value="true">亲人</option>
               <option value="false">怕人</option>
             </select>
           </Field>
           <Field label="绝育状态">
-            <select value={neuterStatus} onChange={(event) => setNeuterStatus(event.target.value as NeuterStatus)}>
+            <select
+              value={neuterStatus}
+              onChange={(event) =>
+                setNeuterStatus(event.target.value as NeuterStatus)
+              }
+            >
               <option value="unknown">未知</option>
               <option value="not_neutered">未绝育</option>
               <option value="confirmed_neutered">已绝育</option>
@@ -255,7 +332,12 @@ export function CreateAnimalPage({ onBack, onSave, state }: CreateAnimalPageProp
             </select>
           </Field>
           <Field label="健康状态">
-            <select value={healthStatus} onChange={(event) => setHealthStatus(event.target.value as HealthStatus)}>
+            <select
+              value={healthStatus}
+              onChange={(event) =>
+                setHealthStatus(event.target.value as HealthStatus)
+              }
+            >
               <option value="normal">正常</option>
               <option value="watching">需要观察</option>
               <option value="suspected_injured">疑似受伤</option>
@@ -278,10 +360,20 @@ export function CreateAnimalPage({ onBack, onSave, state }: CreateAnimalPageProp
 }
 
 function FormGrid({ children }: { children: React.ReactNode }) {
-  return <div className="space-y-3 rounded-lg bg-white p-4 ring-1 ring-sand/70">{children}</div>;
+  return (
+    <div className="space-y-3 rounded-lg bg-white p-4 ring-1 ring-sand/70">
+      {children}
+    </div>
+  );
 }
 
-function Field({ label, children }: { label: string; children: React.ReactElement }) {
+function Field({
+  label,
+  children,
+}: {
+  label: string;
+  children: React.ReactElement;
+}) {
   return (
     <label className="block">
       <span className="mb-1.5 block text-sm font-semibold">{label}</span>

@@ -8,6 +8,18 @@ const toneClass: Record<BadgeTone, string> = {
   yellow: "bg-yellow-100 text-yellow-800",
 };
 
-export function Badge({ children, tone = "gray" }: { children: React.ReactNode; tone?: BadgeTone }) {
-  return <span className={`inline-flex rounded-full px-2.5 py-1 text-xs font-medium ${toneClass[tone]}`}>{children}</span>;
+export function Badge({
+  children,
+  tone = "gray",
+}: {
+  children: React.ReactNode;
+  tone?: BadgeTone;
+}) {
+  return (
+    <span
+      className={`inline-flex rounded-full px-2.5 py-1 text-xs font-medium ${toneClass[tone]}`}
+    >
+      {children}
+    </span>
+  );
 }

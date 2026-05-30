@@ -1,16 +1,30 @@
 import { AppShell } from "../components/AppShell";
 import type { Animal, AnimalRecord, AppState } from "../types";
 import { recordTypeLabels, speciesLabels } from "../utils/labels";
-import { activeAnimals, animalIdsForRecord, primaryAnimalIdForRecord } from "../utils/storage";
+import {
+  activeAnimals,
+  animalIdsForRecord,
+  primaryAnimalIdForRecord,
+} from "../utils/storage";
 
-export function HomePage({ state, onOpenPost }: { state: AppState; onOpenPost: (id: string) => void }) {
+export function HomePage({
+  state,
+  onOpenPost,
+}: {
+  state: AppState;
+  onOpenPost: (id: string) => void;
+}) {
   const animals = activeAnimals(state);
   const animalById = new Map(animals.map((a) => [a.id, a]));
   const tagById = new Map(state.tags.map((t) => [t.id, t.name]));
 
   const records = [...state.feedRecords]
     .filter((r) => Boolean(animalById.get(primaryAnimalIdForRecord(r))))
-    .sort((a, b) => recordPriority(a, animalById) - recordPriority(b, animalById) || new Date(b.occurred_at).getTime() - new Date(a.occurred_at).getTime());
+    .sort(
+      (a, b) =>
+        recordPriority(a, animalById) - recordPriority(b, animalById) ||
+        new Date(b.occurred_at).getTime() - new Date(a.occurred_at).getTime(),
+    );
 
   return (
     <AppShell title="毛孩动态">
@@ -19,8 +33,12 @@ export function HomePage({ state, onOpenPost }: { state: AppState; onOpenPost: (
         {records.map((record) => {
           const animal = animalById.get(primaryAnimalIdForRecord(record));
           if (!animal) return null;
-          const tags = record.tag_ids.map((id) => tagById.get(id)).filter(Boolean) as string[];
-          const linkedAnimals = animalIdsForRecord(record).map((id) => animalById.get(id)).filter(Boolean) as Animal[];
+          const tags = record.tag_ids
+            .map((id) => tagById.get(id))
+            .filter(Boolean) as string[];
+          const linkedAnimals = animalIdsForRecord(record)
+            .map((id) => animalById.get(id))
+            .filter(Boolean) as Animal[];
           return (
             <FeedCard
               key={record.id}
@@ -66,14 +84,20 @@ function FeedCard({
     .slice(0, 3)
     .map((t) => `#${t}`)
     .join("  ");
-  const meta = [locationText ?? (containsStray ? "流浪动物" : speciesLabels[animal.species]), tagLine]
+  const meta = [
+    locationText ??
+      (containsStray ? "流浪动物" : speciesLabels[animal.species]),
+    tagLine,
+  ]
     .filter(Boolean)
     .join("  ·  ");
 
   return (
     <div>
       {/* Time label — tight to card, visually belongs to it */}
-      <p className="mb-1 text-[11px] text-stone-400">{timeWithDate(record.occurred_at)}</p>
+      <p className="mb-1 text-[11px] text-stone-400">
+        {timeWithDate(record.occurred_at)}
+      </p>
 
       <article
         className="cursor-pointer overflow-hidden rounded-[18px] bg-white ring-1 ring-sand/70 active:bg-sand/20"
@@ -103,8 +127,12 @@ function FeedCard({
             <span className="mb-0.5 block text-[14px] font-semibold leading-snug text-ink">
               {title}
             </span>
-            <p className="line-clamp-2 text-[13px] leading-[1.5] text-stone-500">{record.content}</p>
-            <p className="mt-1.5 truncate text-[11px] leading-4 text-stone-400">{meta}</p>
+            <p className="line-clamp-2 text-[13px] leading-[1.5] text-stone-500">
+              {record.content}
+            </p>
+            <p className="mt-1.5 truncate text-[11px] leading-4 text-stone-400">
+              {meta}
+            </p>
           </div>
         </div>
       </article>
@@ -129,17 +157,38 @@ function timeWithDate(value: string) {
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
   const itemDay = new Date(d.getFullYear(), d.getMonth(), d.getDate());
   const diffDays = Math.round((today.getTime() - itemDay.getTime()) / 86400000);
-  const hhmm = new Intl.DateTimeFormat("zh-CN", { hour: "2-digit", minute: "2-digit", hour12: false }).format(d);
+  const hhmm = new Intl.DateTimeFormat("zh-CN", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  }).format(d);
   if (diffDays === 0) return `今天 ${hhmm}`;
   if (diffDays === 1) return `昨天 ${hhmm}`;
   return `${new Intl.DateTimeFormat("zh-CN", { month: "long", day: "numeric" }).format(d)} ${hhmm}`;
 }
 
 function recordPriority(record: AnimalRecord, animalById: Map<string, Animal>) {
-  const animals = animalIdsForRecord(record).map((id) => animalById.get(id)).filter(isAnimal);
+  const animals = animalIdsForRecord(record)
+    .map((id) => animalById.get(id))
+    .filter(isAnimal);
   if (!animals.some((a) => a.animal_origin === "stray")) return 4;
-  if (animals.some((a) => a.rescue_status === "needs_help" || a.health_status === "urgent" || a.health_status === "injured" || a.health_status === "suspected_injured")) return 0;
-  if (animals.some((a) => a.neuter_status === "not_neutered" || a.neuter_status === "unknown")) return 1;
+  if (
+    animals.some(
+      (a) =>
+        a.rescue_status === "needs_help" ||
+        a.health_status === "urgent" ||
+        a.health_status === "injured" ||
+        a.health_status === "suspected_injured",
+    )
+  )
+    return 0;
+  if (
+    animals.some(
+      (a) =>
+        a.neuter_status === "not_neutered" || a.neuter_status === "unknown",
+    )
+  )
+    return 1;
   if (animals.some((a) => a.adoption_status === "available")) return 2;
   return 3;
 }

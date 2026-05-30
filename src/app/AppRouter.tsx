@@ -1,5 +1,9 @@
 import { useMemo, type Dispatch, type SetStateAction } from "react";
-import { goSource as returnToSource, openAnimal as navigateToAnimal, openPost as navigateToPost } from "./navigation";
+import {
+  goSource as returnToSource,
+  openAnimal as navigateToAnimal,
+  openPost as navigateToPost,
+} from "./navigation";
 import type { Route, RouteSource } from "./routes";
 import { getRouteAnimalId } from "./routes";
 import { AddRecordPage } from "../pages/AddRecordPage";
@@ -13,7 +17,11 @@ import { PostDetailPage } from "../pages/PostDetailPage";
 import { ProfilePage } from "../pages/ProfilePage";
 import { ShareCardPage } from "../pages/ShareCardPage";
 import type { Animal, AppState, BottomTab } from "../types";
-import { activeAnimals, primaryAnimalIdForRecord, withChangeLog } from "../utils/storage";
+import {
+  activeAnimals,
+  primaryAnimalIdForRecord,
+  withChangeLog,
+} from "../utils/storage";
 
 type AppRouterProps = {
   state: AppState;
@@ -25,14 +33,25 @@ type AppRouterProps = {
   setNewAnimal: (animal: Animal | undefined) => void;
 };
 
-export function AppRouter({ state, setState, route, setRoute, activeTab, goTabs, setNewAnimal }: AppRouterProps) {
+export function AppRouter({
+  state,
+  setState,
+  route,
+  setRoute,
+  activeTab,
+  goTabs,
+  setNewAnimal,
+}: AppRouterProps) {
   const selectedAnimal = useMemo(() => {
     const animalId = getRouteAnimalId(route);
-    return animalId ? state.animals.find((animal) => animal.id === animalId) : undefined;
+    return animalId
+      ? state.animals.find((animal) => animal.id === animalId)
+      : undefined;
   }, [route, state.animals]);
 
   const selectedPost = useMemo(() => {
-    if (route.name === "post") return state.feedRecords.find((post) => post.id === route.postId);
+    if (route.name === "post")
+      return state.feedRecords.find((post) => post.id === route.postId);
     return undefined;
   }, [route, state.feedRecords]);
 
@@ -48,9 +67,18 @@ export function AppRouter({ state, setState, route, setRoute, activeTab, goTabs,
     navigateToPost(setRoute, postId, source);
   };
 
-  const saveAndReturnToDetail = (nextState: AppState, animalId?: string, source?: RouteSource) => {
+  const saveAndReturnToDetail = (
+    nextState: AppState,
+    animalId?: string,
+    source?: RouteSource,
+  ) => {
     setState(nextState);
-    setRoute({ name: "detail", animalId: animalId || selectedAnimal?.id || activeAnimals(nextState)[0]?.id || "", source });
+    setRoute({
+      name: "detail",
+      animalId:
+        animalId || selectedAnimal?.id || activeAnimals(nextState)[0]?.id || "",
+      source,
+    });
   };
 
   if (route.name === "create") {
@@ -74,7 +102,9 @@ export function AppRouter({ state, setState, route, setRoute, activeTab, goTabs,
   }
 
   if (route.name === "post" && selectedPost) {
-    const animal = state.animals.find((item) => item.id === primaryAnimalIdForRecord(selectedPost));
+    const animal = state.animals.find(
+      (item) => item.id === primaryAnimalIdForRecord(selectedPost),
+    );
     if (animal) {
       return (
         <PostDetailPage
@@ -82,7 +112,9 @@ export function AppRouter({ state, setState, route, setRoute, activeTab, goTabs,
           animal={animal}
           state={state}
           onBack={() => goSource(route.source, "home")}
-          onOpenAnimal={(animalId) => openAnimal(animalId, { from: "post", postId: selectedPost.id })}
+          onOpenAnimal={(animalId) =>
+            openAnimal(animalId, { from: "post", postId: selectedPost.id })
+          }
         />
       );
     }
@@ -94,10 +126,23 @@ export function AppRouter({ state, setState, route, setRoute, activeTab, goTabs,
         animal={selectedAnimal}
         state={state}
         onBack={() => goSource(route.source, "home")}
-        onAddRecord={(type) => setRoute({ name: "addRecord", animalId: selectedAnimal.id, type, source: route.source })}
+        onAddRecord={(type) =>
+          setRoute({
+            name: "addRecord",
+            animalId: selectedAnimal.id,
+            type,
+            source: route.source,
+          })
+        }
         onShare={() => setRoute({ name: "share", animalId: selectedAnimal.id })}
         onMerge={() => setRoute({ name: "merge", animalId: selectedAnimal.id })}
-        onOpenAnimal={(animalId) => openAnimal(animalId, { from: "animal", animalId: selectedAnimal.id, parent: route.source })}
+        onOpenAnimal={(animalId) =>
+          openAnimal(animalId, {
+            from: "animal",
+            animalId: selectedAnimal.id,
+            parent: route.source,
+          })
+        }
       />
     );
   }
@@ -108,12 +153,27 @@ export function AppRouter({ state, setState, route, setRoute, activeTab, goTabs,
         animal={selectedAnimal}
         state={state}
         initialType={route.type}
-        onBack={() => route.source ? setRoute({ name: "detail", animalId: selectedAnimal.id, source: route.source }) : goTabs("home")}
+        onBack={() =>
+          route.source
+            ? setRoute({
+                name: "detail",
+                animalId: selectedAnimal.id,
+                source: route.source,
+              })
+            : goTabs("home")
+        }
         onSave={(nextState, primaryAnimalId) =>
           saveAndReturnToDetail(
             withChangeLog(nextState, {
               animal_id: primaryAnimalId,
-              action: route.type === "photo" ? "added_photo" : route.type === "health" ? "added_health_record" : route.type === "feeding" ? "added_feeding_record" : "updated_status",
+              action:
+                route.type === "photo"
+                  ? "added_photo"
+                  : route.type === "health"
+                    ? "added_health_record"
+                    : route.type === "feeding"
+                      ? "added_feeding_record"
+                      : "updated_status",
               after: { record_type: route.type || "record" },
             }),
             primaryAnimalId,
@@ -125,23 +185,52 @@ export function AppRouter({ state, setState, route, setRoute, activeTab, goTabs,
   }
 
   if (route.name === "share" && selectedAnimal) {
-    return <ShareCardPage animal={selectedAnimal} state={state} onBack={() => setRoute({ name: "detail", animalId: selectedAnimal.id })} />;
+    return (
+      <ShareCardPage
+        animal={selectedAnimal}
+        state={state}
+        onBack={() => setRoute({ name: "detail", animalId: selectedAnimal.id })}
+      />
+    );
   }
 
   if (route.name === "merge" && selectedAnimal) {
-    return <MergeAnimalPage animal={selectedAnimal} state={state} onBack={() => setRoute({ name: "detail", animalId: selectedAnimal.id })} onSave={saveAndReturnToDetail} />;
+    return (
+      <MergeAnimalPage
+        animal={selectedAnimal}
+        state={state}
+        onBack={() => setRoute({ name: "detail", animalId: selectedAnimal.id })}
+        onSave={saveAndReturnToDetail}
+      />
+    );
   }
 
   if (activeTab === "home") {
-    return <HomePage state={state} onOpenPost={(postId) => openPost(postId, { from: "home" })} />;
+    return (
+      <HomePage
+        state={state}
+        onOpenPost={(postId) => openPost(postId, { from: "home" })}
+      />
+    );
   }
 
   if (activeTab === "map") {
-    return <MapPage state={state} onOpenAnimal={(animalId) => openAnimal(animalId, { from: "map" })} onOpenPost={(postId) => openPost(postId, { from: "map" })} />;
+    return (
+      <MapPage
+        state={state}
+        onOpenAnimal={(animalId) => openAnimal(animalId, { from: "map" })}
+        onOpenPost={(postId) => openPost(postId, { from: "map" })}
+      />
+    );
   }
 
   if (activeTab === "catalog") {
-    return <CatalogPage state={state} onOpenAnimal={(animalId) => openAnimal(animalId, { from: "catalog" })} />;
+    return (
+      <CatalogPage
+        state={state}
+        onOpenAnimal={(animalId) => openAnimal(animalId, { from: "catalog" })}
+      />
+    );
   }
 
   if (activeTab === "profile") {

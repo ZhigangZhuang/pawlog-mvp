@@ -3,7 +3,12 @@ import { useState } from "react";
 import { AppShell } from "../components/AppShell";
 import { Badge } from "../components/Badge";
 import type { Animal, AnimalRecord, AppState, StrayLocation } from "../types";
-import { formatDate, healthLabels, locationTypeLabels, speciesLabels } from "../utils/labels";
+import {
+  formatDate,
+  healthLabels,
+  locationTypeLabels,
+  speciesLabels,
+} from "../utils/labels";
 import { activeAnimals, animalIdsForRecord } from "../utils/storage";
 
 type MapFilter = "all" | "owned_pet" | "stray" | "shared";
@@ -15,7 +20,15 @@ const filters: Array<{ id: MapFilter; label: string }> = [
   { id: "shared", label: "分享给我的" },
 ];
 
-export function MapPage({ state, onOpenAnimal, onOpenPost }: { state: AppState; onOpenAnimal: (id: string) => void; onOpenPost: (id: string) => void }) {
+export function MapPage({
+  state,
+  onOpenAnimal,
+  onOpenPost,
+}: {
+  state: AppState;
+  onOpenAnimal: (id: string) => void;
+  onOpenPost: (id: string) => void;
+}) {
   const animals = activeAnimals(state);
   const [filter, setFilter] = useState<MapFilter>("all");
   const [selectedId, setSelectedId] = useState(state.locations[0]?.id || "");
@@ -23,13 +36,21 @@ export function MapPage({ state, onOpenAnimal, onOpenPost }: { state: AppState; 
     const animal = animals.find((item) => item.id === location.animal_id);
     if (!animal) return false;
     if (filter === "all") return true;
-    if (filter === "owned_pet") return animal.animal_origin === "owned_pet" && animal.animal_source !== "shared_to_me";
+    if (filter === "owned_pet")
+      return (
+        animal.animal_origin === "owned_pet" &&
+        animal.animal_source !== "shared_to_me"
+      );
     if (filter === "stray") return animal.animal_origin === "stray";
     if (filter === "shared") return animal.animal_source === "shared_to_me";
     return true;
   });
-  const selected = visibleLocations.find((location) => location.id === selectedId) || visibleLocations[0];
-  const selectedAnimal = selected ? animals.find((animal) => animal.id === selected.animal_id) : undefined;
+  const selected =
+    visibleLocations.find((location) => location.id === selectedId) ||
+    visibleLocations[0];
+  const selectedAnimal = selected
+    ? animals.find((animal) => animal.id === selected.animal_id)
+    : undefined;
 
   return (
     <AppShell title="地图" subtitle="我的记录地点">
@@ -64,7 +85,9 @@ export function MapPage({ state, onOpenAnimal, onOpenPost }: { state: AppState; 
             <div className="absolute left-3/4 top-0 h-full w-px bg-white" />
           </div>
           {visibleLocations.map((location, index) => {
-            const animal = animals.find((item) => item.id === location.animal_id);
+            const animal = animals.find(
+              (item) => item.id === location.animal_id,
+            );
             if (!animal) return null;
             const point = positionFor(location, index);
             const isStray = animal.animal_origin === "stray";
@@ -76,9 +99,17 @@ export function MapPage({ state, onOpenAnimal, onOpenPost }: { state: AppState; 
                 style={{ left: `${point.x}%`, top: `${point.y}%` }}
                 onClick={() => setSelectedId(location.id)}
               >
-                {isStray ? <span className="absolute -inset-4 rounded-full bg-green-500/10 blur-sm" /> : null}
-                <span className={`relative grid h-12 w-12 place-items-center rounded-full text-white shadow-soft ring-4 ring-white ${isStray ? "bg-moss" : "bg-clay"}`}>
-                  {isStray || location.is_sensitive ? <EyeOff size={19} /> : <MapPin size={19} />}
+                {isStray ? (
+                  <span className="absolute -inset-4 rounded-full bg-green-500/10 blur-sm" />
+                ) : null}
+                <span
+                  className={`relative grid h-12 w-12 place-items-center rounded-full text-white shadow-soft ring-4 ring-white ${isStray ? "bg-moss" : "bg-clay"}`}
+                >
+                  {isStray || location.is_sensitive ? (
+                    <EyeOff size={19} />
+                  ) : (
+                    <MapPin size={19} />
+                  )}
                 </span>
               </button>
             );
@@ -89,7 +120,9 @@ export function MapPage({ state, onOpenAnimal, onOpenPost }: { state: AppState; 
           <MapBottomSheet
             location={selected}
             animal={selectedAnimal}
-            recentPost={state.feedRecords.find((record) => animalIdsForRecord(record).includes(selectedAnimal.id))}
+            recentPost={state.feedRecords.find((record) =>
+              animalIdsForRecord(record).includes(selectedAnimal.id),
+            )}
             onOpenAnimal={() => onOpenAnimal(selectedAnimal.id)}
             onOpenPost={(postId) => onOpenPost(postId)}
           />
@@ -99,31 +132,68 @@ export function MapPage({ state, onOpenAnimal, onOpenPost }: { state: AppState; 
   );
 }
 
-function MapBottomSheet({ location, animal, recentPost, onOpenAnimal, onOpenPost }: { location: StrayLocation; animal: Animal; recentPost?: AnimalRecord; onOpenAnimal: () => void; onOpenPost: (id: string) => void }) {
+function MapBottomSheet({
+  location,
+  animal,
+  recentPost,
+  onOpenAnimal,
+  onOpenPost,
+}: {
+  location: StrayLocation;
+  animal: Animal;
+  recentPost?: AnimalRecord;
+  onOpenAnimal: () => void;
+  onOpenPost: (id: string) => void;
+}) {
   const isStray = animal.animal_origin === "stray";
   return (
     <div className="rounded-[20px] bg-white p-4 shadow-soft ring-1 ring-sand/70">
       <div className="flex gap-3">
-        <img className="h-16 w-16 rounded-lg object-cover" src={animal.cover_image_url} alt={animal.name} />
+        <img
+          className="h-16 w-16 rounded-lg object-cover"
+          src={animal.cover_image_url}
+          alt={animal.name}
+        />
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2">
             <h2 className="font-bold">{animal.name}</h2>
-            <Badge tone={isStray ? "green" : "orange"}>{speciesLabels[animal.species]}</Badge>
+            <Badge tone={isStray ? "green" : "orange"}>
+              {speciesLabels[animal.species]}
+            </Badge>
           </div>
           <p className="mt-1 text-sm text-stone-500">
-            {locationTypeLabels[location.type]} · {isStray || location.is_sensitive ? "模糊地点" : location.location_name}
+            {locationTypeLabels[location.type]} ·{" "}
+            {isStray || location.is_sensitive
+              ? "模糊地点"
+              : location.location_name}
           </p>
-          {animal.health_status ? <p className="mt-1 text-sm text-stone-500">{healthLabels[animal.health_status]}</p> : null}
+          {animal.health_status ? (
+            <p className="mt-1 text-sm text-stone-500">
+              {healthLabels[animal.health_status]}
+            </p>
+          ) : null}
         </div>
       </div>
-      {isStray ? <p className="mt-3 rounded-lg bg-green-50 p-3 text-sm leading-6 text-green-900">为保护动物安全，这里不展示精确坐标、固定出没时间或敏感地点。</p> : null}
+      {isStray ? (
+        <p className="mt-3 rounded-lg bg-green-50 p-3 text-sm leading-6 text-green-900">
+          为保护动物安全，这里不展示精确坐标、固定出没时间或敏感地点。
+        </p>
+      ) : null}
       {recentPost ? (
-        <button className="mt-3 w-full rounded-2xl bg-cream p-3 text-left ring-1 ring-sand/70" onClick={() => onOpenPost(recentPost.id)}>
+        <button
+          className="mt-3 w-full rounded-2xl bg-cream p-3 text-left ring-1 ring-sand/70"
+          onClick={() => onOpenPost(recentPost.id)}
+        >
           <span className="block text-sm font-bold">最近动态</span>
-          <span className="mt-1 line-clamp-1 block text-sm text-stone-500">{formatDate(recentPost.occurred_at)} · {recentPost.content}</span>
+          <span className="mt-1 line-clamp-1 block text-sm text-stone-500">
+            {formatDate(recentPost.occurred_at)} · {recentPost.content}
+          </span>
         </button>
       ) : null}
-      <button className="mt-3 w-full rounded-full bg-clay px-4 py-3 font-bold text-white" onClick={onOpenAnimal}>
+      <button
+        className="mt-3 w-full rounded-full bg-clay px-4 py-3 font-bold text-white"
+        onClick={onOpenAnimal}
+      >
         查看主页
       </button>
     </div>

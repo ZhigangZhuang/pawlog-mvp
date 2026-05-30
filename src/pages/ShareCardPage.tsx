@@ -3,7 +3,12 @@ import { useState } from "react";
 import { AppShell } from "../components/AppShell";
 import { Badge } from "../components/Badge";
 import type { Animal, AppState } from "../types";
-import { getAgeText, healthLabels, rescueLabels, speciesLabels } from "../utils/labels";
+import {
+  getAgeText,
+  healthLabels,
+  rescueLabels,
+  speciesLabels,
+} from "../utils/labels";
 import { sortTimeline } from "../utils/storage";
 
 type ShareCardPageProps = {
@@ -17,11 +22,21 @@ export function ShareCardPage({ animal, state, onBack }: ShareCardPageProps) {
   const [template, setTemplate] = useState(isStray ? "adoption" : "growth");
   const [showArea, setShowArea] = useState(isStray);
   const location = state.locations.find((item) => item.animal_id === animal.id);
-  const latest = sortTimeline(state.timeline.filter((item) => item.animal_id === animal.id))[0];
-  const publicArea = isStray && showArea ? sanitizeLocation(location?.location_name, location?.is_sensitive) : "";
+  const latest = sortTimeline(
+    state.timeline.filter((item) => item.animal_id === animal.id),
+  )[0];
+  const publicArea =
+    isStray && showArea
+      ? sanitizeLocation(location?.location_name, location?.is_sensitive)
+      : "";
 
   return (
-    <AppShell title="分享卡预览" subtitle={animal.name} canGoBack onBack={onBack}>
+    <AppShell
+      title="分享卡预览"
+      subtitle={animal.name}
+      canGoBack
+      onBack={onBack}
+    >
       <div className="space-y-5">
         <div className="grid grid-cols-2 gap-2">
           {(isStray ? strayTemplates : petTemplates).map((item) => (
@@ -43,36 +58,71 @@ export function ShareCardPage({ animal, state, onBack }: ShareCardPageProps) {
             </div>
             为保护流浪动物安全，分享卡不会包含精确位置、固定出没时间、幼崽窝点或抓捕计划。
             <label className="flex items-center gap-3 pt-1">
-              <input type="checkbox" checked={showArea} onChange={(event) => setShowArea(event.target.checked)} />
+              <input
+                type="checkbox"
+                checked={showArea}
+                onChange={(event) => setShowArea(event.target.checked)}
+              />
               展示模糊区域
             </label>
           </div>
         ) : null}
 
         <div className="rounded-[28px] bg-white p-4 shadow-soft ring-1 ring-sand/80">
-          <div className={`overflow-hidden rounded-[24px] ${isStray ? "bg-green-50" : "bg-orange-50"}`}>
+          <div
+            className={`overflow-hidden rounded-[24px] ${isStray ? "bg-green-50" : "bg-orange-50"}`}
+          >
             <div className="h-72 bg-sand">
-              {animal.cover_image_url ? <img className="h-full w-full object-cover" src={animal.cover_image_url} alt={animal.name} /> : null}
+              {animal.cover_image_url ? (
+                <img
+                  className="h-full w-full object-cover"
+                  src={animal.cover_image_url}
+                  alt={animal.name}
+                />
+              ) : null}
             </div>
             <div className="space-y-4 p-5">
               <div>
                 <div className="mb-2 flex flex-wrap gap-2">
-                  <Badge tone={isStray ? "green" : "orange"}>{isStray ? templateLabel(template, strayTemplates) : templateLabel(template, petTemplates)}</Badge>
+                  <Badge tone={isStray ? "green" : "orange"}>
+                    {isStray
+                      ? templateLabel(template, strayTemplates)
+                      : templateLabel(template, petTemplates)}
+                  </Badge>
                   {isStray ? <Badge tone="gray">位置已保护</Badge> : null}
                 </div>
                 <h2 className="text-3xl font-black">{animal.name}</h2>
                 <p className="mt-1 text-sm text-stone-600">
-                  {speciesLabels[animal.species]} / {getAgeText(animal.birthday, animal.age_stage)}
+                  {speciesLabels[animal.species]} /{" "}
+                  {getAgeText(animal.birthday, animal.age_stage)}
                 </p>
               </div>
 
               <div className="grid gap-2 text-sm">
-                {animal.personality ? <CardLine label="性格" value={animal.personality} /> : null}
-                {animal.health_status ? <CardLine label="健康" value={healthLabels[animal.health_status]} /> : null}
-                {isStray && animal.rescue_status ? <CardLine label="救助状态" value={rescueLabels[animal.rescue_status]} /> : null}
-                {isStray && publicArea ? <CardLine label="模糊区域" value={publicArea} /> : null}
-                {!isStray && animal.home_date ? <CardLine label="到家纪念日" value={animal.home_date} /> : null}
-                {!isStray && latest ? <CardLine label="最近记录" value={latest.title} /> : null}
+                {animal.personality ? (
+                  <CardLine label="性格" value={animal.personality} />
+                ) : null}
+                {animal.health_status ? (
+                  <CardLine
+                    label="健康"
+                    value={healthLabels[animal.health_status]}
+                  />
+                ) : null}
+                {isStray && animal.rescue_status ? (
+                  <CardLine
+                    label="救助状态"
+                    value={rescueLabels[animal.rescue_status]}
+                  />
+                ) : null}
+                {isStray && publicArea ? (
+                  <CardLine label="模糊区域" value={publicArea} />
+                ) : null}
+                {!isStray && animal.home_date ? (
+                  <CardLine label="到家纪念日" value={animal.home_date} />
+                ) : null}
+                {!isStray && latest ? (
+                  <CardLine label="最近记录" value={latest.title} />
+                ) : null}
               </div>
 
               <p className="rounded-lg bg-white/75 p-3 text-xs leading-5 text-stone-600">
@@ -109,14 +159,20 @@ const strayTemplates = [
   { value: "observe", label: "观察记录" },
 ];
 
-function templateLabel(value: string, options: { value: string; label: string }[]) {
+function templateLabel(
+  value: string,
+  options: { value: string; label: string }[],
+) {
   return options.find((item) => item.value === value)?.label || "分享卡";
 }
 
 function sanitizeLocation(name?: string, isSensitive?: boolean) {
   if (!name) return "附近区域";
   if (isSensitive) return "附近区域，精确位置已隐藏";
-  return name.replace(/[0-9０-９]+号|[0-9０-９]+栋|[0-9０-９]+单元|[0-9０-９]+室/g, "附近");
+  return name.replace(
+    /[0-9０-９]+号|[0-9０-９]+栋|[0-9０-９]+单元|[0-9０-９]+室/g,
+    "附近",
+  );
 }
 
 function CardLine({ label, value }: { label: string; value: string }) {

@@ -58,18 +58,58 @@ export type LocationType =
   | "temporary_home";
 export type MergeStatus = "pending" | "completed" | "cancelled" | "reverted";
 export type AnimalArchiveStatus = "active" | "merged" | "archived" | "deleted";
-export type GroupType = "private_care_group" | "rescue_project" | "family_pet_group";
+export type GroupType =
+  | "private_care_group"
+  | "rescue_project"
+  | "family_pet_group";
 export type GroupRole = "owner" | "admin" | "member" | "viewer";
 export type TagScope = "personal" | "group";
 export type InboxPhotoStatus = "unassigned" | "assigned" | "ignored";
-export type IssueStatus = "open" | "in_progress" | "blocked" | "done" | "closed";
+export type IssueStatus =
+  | "open"
+  | "in_progress"
+  | "blocked"
+  | "done"
+  | "closed";
 export type IssuePriority = "P0" | "P1" | "P2" | "P3";
-export type IssueType = "observe" | "feeding" | "health" | "neuter" | "rescue" | "adoption" | "photo_confirm" | "merge_check" | "pet_care" | "other";
+export type IssueType =
+  | "observe"
+  | "feeding"
+  | "health"
+  | "neuter"
+  | "rescue"
+  | "adoption"
+  | "photo_confirm"
+  | "merge_check"
+  | "pet_care"
+  | "other";
 export type WatchLevel = "none" | "important_only" | "all_updates";
-export type AnimalVisibility = "private" | "shared_readonly" | "shared_recordable" | "public_card";
-export type AnimalSource = "created_by_me" | "shared_to_me" | "imported" | "merged";
-export type FeedRecordType = "photo" | "note" | "feeding" | "health" | "location" | "weight" | "anniversary" | "adoption" | "shared_update";
-export type AnimalOwnershipStatus = "owned_by_me" | "shared_to_me" | "transferred_out" | "transferred_to_me" | "co_recording";
+export type AnimalVisibility =
+  | "private"
+  | "shared_readonly"
+  | "shared_recordable"
+  | "public_card";
+export type AnimalSource =
+  | "created_by_me"
+  | "shared_to_me"
+  | "imported"
+  | "merged";
+export type FeedRecordType =
+  | "photo"
+  | "note"
+  | "feeding"
+  | "health"
+  | "location"
+  | "weight"
+  | "anniversary"
+  | "adoption"
+  | "shared_update";
+export type AnimalOwnershipStatus =
+  | "owned_by_me"
+  | "shared_to_me"
+  | "transferred_out"
+  | "transferred_to_me"
+  | "co_recording";
 export type AnimalRelationType =
   | "parent"
   | "child"
@@ -82,8 +122,18 @@ export type AnimalRelationType =
   | "adopted_from"
   | "transferred_to"
   | "unknown";
-export type AnimalFamilyType = "family" | "litter" | "feeding_group" | "friends" | "temporary_group";
-export type AnimalTransferType = "adoption" | "gift" | "temporary_care" | "foster" | "return";
+export type AnimalFamilyType =
+  | "family"
+  | "litter"
+  | "feeding_group"
+  | "friends"
+  | "temporary_group";
+export type AnimalTransferType =
+  | "adoption"
+  | "gift"
+  | "temporary_care"
+  | "foster"
+  | "return";
 
 export type RecordSource = {
   source_type: "self" | "imported" | "group_member" | "shared_link";

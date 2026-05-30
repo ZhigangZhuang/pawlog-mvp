@@ -34,7 +34,8 @@ export const mockAnimals: Animal[] = [
     health_status: "normal",
     aliases: [],
     archive_status: "active",
-    cover_image_url: "https://images.unsplash.com/photo-1518791841217-8f162f1e1131?auto=format&fit=crop&w=900&q=80",
+    cover_image_url:
+      "https://images.unsplash.com/photo-1518791841217-8f162f1e1131?auto=format&fit=crop&w=900&q=80",
     created_at: "2026-05-01T10:00:00",
     updated_at: "2026-05-27T10:00:00",
   },
@@ -55,7 +56,8 @@ export const mockAnimals: Animal[] = [
     health_status: "normal",
     aliases: [],
     archive_status: "active",
-    cover_image_url: "https://images.unsplash.com/photo-1548199973-03cce0bbc87b?auto=format&fit=crop&w=900&q=80",
+    cover_image_url:
+      "https://images.unsplash.com/photo-1548199973-03cce0bbc87b?auto=format&fit=crop&w=900&q=80",
     created_at: "2026-05-01T10:00:00",
     updated_at: "2026-05-27T10:00:00",
   },
@@ -78,7 +80,8 @@ export const mockAnimals: Animal[] = [
     danger_level: "low",
     aliases: ["橘子"],
     archive_status: "active",
-    cover_image_url: "https://images.unsplash.com/photo-1573865526739-10659fec78a5?auto=format&fit=crop&w=900&q=80",
+    cover_image_url:
+      "https://images.unsplash.com/photo-1573865526739-10659fec78a5?auto=format&fit=crop&w=900&q=80",
     created_at: "2026-05-01T10:00:00",
     updated_at: "2026-05-27T10:00:00",
   },
@@ -101,7 +104,8 @@ export const mockAnimals: Animal[] = [
     danger_level: "high",
     aliases: [],
     archive_status: "active",
-    cover_image_url: "https://images.unsplash.com/photo-1568572933382-74d440642117?auto=format&fit=crop&w=900&q=80",
+    cover_image_url:
+      "https://images.unsplash.com/photo-1568572933382-74d440642117?auto=format&fit=crop&w=900&q=80",
     created_at: "2026-05-01T10:00:00",
     updated_at: "2026-05-27T10:00:00",
   },
@@ -112,7 +116,8 @@ export const mockPhotos: AnimalPhoto[] = mockAnimals.map((animal) => ({
   animal_id: animal.id,
   image_url: animal.cover_image_url || "",
   taken_at: animal.updated_at,
-  note: animal.animal_origin === "owned_pet" ? "今日照片" : "用于识别个体的近照",
+  note:
+    animal.animal_origin === "owned_pet" ? "今日照片" : "用于识别个体的近照",
   is_cover: true,
   created_at: animal.updated_at,
   source: { source_type: "self" },
@@ -278,7 +283,8 @@ export const mockSharedPackages: SharedAnimalPackage[] = [
       danger_level: "low",
       aliases: [],
       archive_status: "active",
-      cover_image_url: "https://images.unsplash.com/photo-1574144611937-0df059b5ef3e?auto=format&fit=crop&w=900&q=80",
+      cover_image_url:
+        "https://images.unsplash.com/photo-1574144611937-0df059b5ef3e?auto=format&fit=crop&w=900&q=80",
       created_at: "2026-05-20T10:00:00",
       updated_at: "2026-05-27T21:00:00",
     },
@@ -286,11 +292,16 @@ export const mockSharedPackages: SharedAnimalPackage[] = [
       {
         id: "shared_photo_orange",
         animal_id: "shared_orange",
-        image_url: "https://images.unsplash.com/photo-1574144611937-0df059b5ef3e?auto=format&fit=crop&w=900&q=80",
+        image_url:
+          "https://images.unsplash.com/photo-1574144611937-0df059b5ef3e?auto=format&fit=crop&w=900&q=80",
         taken_at: "2026-05-27T18:10:00",
         note: "小组成员分享的近照",
         created_at: "2026-05-27T21:00:00",
-        source: { source_type: "shared_link", source_user_id: "user_2", source_animal_id: "shared_orange" },
+        source: {
+          source_type: "shared_link",
+          source_user_id: "user_2",
+          source_animal_id: "shared_orange",
+        },
       },
     ],
     timeline: [
@@ -302,7 +313,11 @@ export const mockSharedPackages: SharedAnimalPackage[] = [
         description: "右眼偶尔有分泌物，已连续观察两天",
         occurred_at: "2026-05-27T18:15:00",
         created_at: "2026-05-27T21:00:00",
-        source: { source_type: "shared_link", source_user_id: "user_2", source_animal_id: "shared_orange" },
+        source: {
+          source_type: "shared_link",
+          source_user_id: "user_2",
+          source_animal_id: "shared_orange",
+        },
       },
     ],
     locations: [
@@ -322,7 +337,11 @@ export const mockSharedPackages: SharedAnimalPackage[] = [
         created_by: "user_2",
         created_at: "2026-05-27T21:00:00",
         updated_at: "2026-05-27T21:00:00",
-        source: { source_type: "shared_link", source_user_id: "user_2", source_animal_id: "shared_orange" },
+        source: {
+          source_type: "shared_link",
+          source_user_id: "user_2",
+          source_animal_id: "shared_orange",
+        },
       },
     ],
   },
@@ -409,26 +428,104 @@ export const mockGroupAnimals: GroupAnimal[] = [
 ];
 
 export const mockTags: Tag[] = [
-  { id: "tag_personal_fav", name: "我常喂的", color: "#E97843", scope: "personal", created_by: "user_1", created_at: "2026-05-10T09:00:00" },
-  { id: "tag_group_tnr", name: "待绝育", color: "#EAB308", scope: "group", group_id: "group_neighborhood", created_by: "user_1", created_at: "2026-05-10T09:00:00" },
-  { id: "tag_group_done", name: "已绝育", color: "#6A9B6B", scope: "group", group_id: "group_neighborhood", created_by: "user_1", created_at: "2026-05-10T09:00:00" },
-  { id: "tag_group_help", name: "需救助", color: "#D96060", scope: "group", group_id: "group_neighborhood", created_by: "user_1", created_at: "2026-05-10T09:00:00" },
-  { id: "tag_group_watch", name: "重点观察", color: "#7C83FD", scope: "group", group_id: "group_neighborhood", created_by: "user_1", created_at: "2026-05-10T09:00:00" },
-  { id: "tag_group_private", name: "不公开位置", color: "#57534E", scope: "group", group_id: "group_neighborhood", created_by: "user_1", created_at: "2026-05-10T09:00:00" },
+  {
+    id: "tag_personal_fav",
+    name: "我常喂的",
+    color: "#E97843",
+    scope: "personal",
+    created_by: "user_1",
+    created_at: "2026-05-10T09:00:00",
+  },
+  {
+    id: "tag_group_tnr",
+    name: "待绝育",
+    color: "#EAB308",
+    scope: "group",
+    group_id: "group_neighborhood",
+    created_by: "user_1",
+    created_at: "2026-05-10T09:00:00",
+  },
+  {
+    id: "tag_group_done",
+    name: "已绝育",
+    color: "#6A9B6B",
+    scope: "group",
+    group_id: "group_neighborhood",
+    created_by: "user_1",
+    created_at: "2026-05-10T09:00:00",
+  },
+  {
+    id: "tag_group_help",
+    name: "需救助",
+    color: "#D96060",
+    scope: "group",
+    group_id: "group_neighborhood",
+    created_by: "user_1",
+    created_at: "2026-05-10T09:00:00",
+  },
+  {
+    id: "tag_group_watch",
+    name: "重点观察",
+    color: "#7C83FD",
+    scope: "group",
+    group_id: "group_neighborhood",
+    created_by: "user_1",
+    created_at: "2026-05-10T09:00:00",
+  },
+  {
+    id: "tag_group_private",
+    name: "不公开位置",
+    color: "#57534E",
+    scope: "group",
+    group_id: "group_neighborhood",
+    created_by: "user_1",
+    created_at: "2026-05-10T09:00:00",
+  },
 ];
 
 export const mockAnimalTags: AnimalTag[] = [
-  { id: "at_3_done", animal_id: "3", tag_id: "tag_group_done", added_by: "user_1", created_at: "2026-05-20T10:00:00" },
-  { id: "at_3_private", animal_id: "3", tag_id: "tag_group_private", added_by: "user_1", created_at: "2026-05-20T10:00:00" },
-  { id: "at_4_help", animal_id: "4", tag_id: "tag_group_help", added_by: "user_1", created_at: "2026-05-22T10:00:00" },
-  { id: "at_4_watch", animal_id: "4", tag_id: "tag_group_watch", added_by: "user_2", created_at: "2026-05-26T20:10:00" },
-  { id: "at_4_private", animal_id: "4", tag_id: "tag_group_private", added_by: "user_1", created_at: "2026-05-26T20:10:00" },
+  {
+    id: "at_3_done",
+    animal_id: "3",
+    tag_id: "tag_group_done",
+    added_by: "user_1",
+    created_at: "2026-05-20T10:00:00",
+  },
+  {
+    id: "at_3_private",
+    animal_id: "3",
+    tag_id: "tag_group_private",
+    added_by: "user_1",
+    created_at: "2026-05-20T10:00:00",
+  },
+  {
+    id: "at_4_help",
+    animal_id: "4",
+    tag_id: "tag_group_help",
+    added_by: "user_1",
+    created_at: "2026-05-22T10:00:00",
+  },
+  {
+    id: "at_4_watch",
+    animal_id: "4",
+    tag_id: "tag_group_watch",
+    added_by: "user_2",
+    created_at: "2026-05-26T20:10:00",
+  },
+  {
+    id: "at_4_private",
+    animal_id: "4",
+    tag_id: "tag_group_private",
+    added_by: "user_1",
+    created_at: "2026-05-26T20:10:00",
+  },
 ];
 
 export const mockInboxPhotos: InboxPhoto[] = [
   {
     id: "inbox_1",
-    image_url: "https://images.unsplash.com/photo-1606214174585-fe31582dc6ee?auto=format&fit=crop&w=900&q=80",
+    image_url:
+      "https://images.unsplash.com/photo-1606214174585-fe31582dc6ee?auto=format&fit=crop&w=900&q=80",
     taken_at: "2026-05-27T17:20:00",
     note: "可能是小橘，待归档",
     status: "unassigned",
@@ -436,7 +533,8 @@ export const mockInboxPhotos: InboxPhoto[] = [
   },
   {
     id: "inbox_2",
-    image_url: "https://images.unsplash.com/photo-1548199973-03cce0bbc87b?auto=format&fit=crop&w=900&q=80",
+    image_url:
+      "https://images.unsplash.com/photo-1548199973-03cce0bbc87b?auto=format&fit=crop&w=900&q=80",
     taken_at: "2026-05-26T18:40:00",
     note: "路边拍到的狗，待确认是否大黄",
     status: "unassigned",
@@ -531,7 +629,8 @@ export const mockWikiPages: WikiPage[] = [
     id: "wiki_1",
     group_id: "group_neighborhood",
     title: "喂养规则",
-    content: "1. 固定喂食点不公开。\n2. 不留下易腐食物。\n3. 发现异常先记录健康状态，再联系管理员。",
+    content:
+      "1. 固定喂食点不公开。\n2. 不留下易腐食物。\n3. 发现异常先记录健康状态，再联系管理员。",
     created_by: "user_1",
     updated_by: "user_1",
     created_at: "2026-05-10T09:00:00",
@@ -541,7 +640,8 @@ export const mockWikiPages: WikiPage[] = [
     id: "wiki_2",
     group_id: "group_neighborhood",
     title: "合作医院",
-    content: "星河宠物医院：可咨询绝育和外伤评估。\n紧急情况先电话确认接诊时间。",
+    content:
+      "星河宠物医院：可咨询绝育和外伤评估。\n紧急情况先电话确认接诊时间。",
     created_by: "user_1",
     updated_by: "user_1",
     created_at: "2026-05-11T09:00:00",
