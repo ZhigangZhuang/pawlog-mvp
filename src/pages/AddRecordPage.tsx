@@ -39,6 +39,7 @@ export function AddRecordPage({ animal, state, initialType, onBack, onSave }: Ad
   const [animalQuery, setAnimalQuery] = useState("");
   const [showAllAnimals, setShowAllAnimals] = useState(false);
   const [categoryFilter, setCategoryFilter] = useState<string | null>(null);
+  const [pickerOpen, setPickerOpen] = useState(false);
 
   useEffect(() => {
     if (!allowedTypes.includes(type)) setType(allowedTypes[0]);
@@ -256,117 +257,120 @@ export function AddRecordPage({ animal, state, initialType, onBack, onSave }: Ad
           </div>
         )}
 
-        {/* Animal picker */}
-        <div className="rounded-[22px] bg-white p-4 ring-1 ring-sand/70">
-          <div className="mb-3 flex items-center justify-between gap-2">
-            <p className="text-sm font-bold text-stone-700">毛孩</p>
-            {selectedAnimals.length > 0 && (
-              <span className="rounded-full bg-orange-50 px-2 py-0.5 text-xs font-bold text-clay">
-                已选 {selectedAnimals.length} 只
-              </span>
-            )}
-          </div>
-
-          {/* Selected chips */}
-          {selectedAnimals.length > 0 && (
-            <div className="mb-3 flex flex-wrap gap-2">
-              {selectedAnimals.map((item) => (
-                <span
-                  key={item.id}
-                  className={`flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold ${
-                    item.id === primaryAnimalId ? "bg-clay text-white" : "bg-stone-100 text-stone-700"
-                  }`}
-                >
-                  <button
-                    type="button"
-                    onClick={() => setPrimaryAnimalId(item.id)}
-                    className="flex items-center gap-1"
-                    title={item.id === primaryAnimalId ? "主角" : "设为主角"}
+        {/* Animal picker entry */}
+        <button
+          type="button"
+          className="flex w-full items-center gap-3 rounded-[18px] bg-white p-4 text-left ring-1 ring-sand/70"
+          onClick={() => setPickerOpen(true)}
+        >
+          <span className="min-w-0 flex-1">
+            <span className="mb-1 block text-sm font-bold text-stone-700">毛孩</span>
+            {selectedAnimals.length > 0 ? (
+              <span className="flex flex-wrap gap-1.5">
+                {selectedAnimals.map((item) => (
+                  <span
+                    key={item.id}
+                    className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-semibold ${
+                      item.id === primaryAnimalId ? "bg-clay text-white" : "bg-stone-100 text-stone-600"
+                    }`}
                   >
                     {item.id === primaryAnimalId && <span className="text-[10px]">主角</span>}
                     {item.name}
+                  </span>
+                ))}
+              </span>
+            ) : (
+              <span className="text-sm text-stone-400">请选择这条动态里的毛孩</span>
+            )}
+          </span>
+          <ChevronDown size={16} className="shrink-0 text-stone-400" />
+        </button>
+
+        {/* Animal picker bottom sheet */}
+        {pickerOpen && (
+          <div className="fixed inset-0 z-40 bg-black/30" onClick={() => setPickerOpen(false)}>
+            <div
+              className="absolute inset-x-0 bottom-0 mx-auto max-h-[75vh] max-w-md overflow-y-auto rounded-t-[24px] bg-white p-4 pb-[max(1.5rem,env(safe-area-inset-bottom))] shadow-soft"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="mx-auto mb-3 h-1 w-10 rounded-full bg-stone-300" />
+              <div className="mb-3 flex items-center justify-between">
+                <p className="font-bold">选择毛孩</p>
+                <button className="rounded-full bg-clay px-3 py-1 text-xs font-bold text-white" onClick={() => setPickerOpen(false)}>
+                  完成
+                </button>
+              </div>
+
+              {/* Search */}
+              <div className="mb-3 flex items-center gap-2 rounded-full bg-stone-50 px-3 py-2 text-sm text-stone-500 ring-1 ring-stone-200">
+                <Search size={15} className="shrink-0" />
+                <input
+                  className="min-w-0 flex-1 bg-transparent outline-none"
+                  value={animalQuery}
+                  onChange={(e) => { setAnimalQuery(e.target.value); setShowAllAnimals(false); }}
+                  placeholder="搜索名字、毛色、特征"
+                />
+              </div>
+
+              {/* Category filters */}
+              <div className="mb-3 flex flex-wrap gap-1.5">
+                {([
+                  ["stray_cat", "流浪猫"],
+                  ["stray_dog", "流浪狗"],
+                  ["pet", "我的宠物"],
+                  ["shared", "分享给我的"],
+                ] as const).map(([key, label]) => (
+                  <button
+                    key={key}
+                    type="button"
+                    className={`rounded-full px-2.5 py-1 text-[11px] font-semibold ${
+                      categoryFilter === key ? "bg-clay text-white" : "bg-stone-50 text-stone-500 ring-1 ring-stone-200"
+                    }`}
+                    onClick={() => { setCategoryFilter(categoryFilter === key ? null : key); setShowAllAnimals(false); }}
+                  >
+                    {label}
                   </button>
+                ))}
+              </div>
+
+              {/* Animal list */}
+              {filteredAnimals !== null ? (
+                <AnimalPickerList animals={filteredAnimals} selectedIds={selectedAnimalIds} primaryId={primaryAnimalId} onToggle={toggleAnimal} onSetPrimary={setPrimaryAnimalId} />
+              ) : showAllAnimals ? (
+                <AnimalPickerList animals={availableAnimals} selectedIds={selectedAnimalIds} primaryId={primaryAnimalId} onToggle={toggleAnimal} onSetPrimary={setPrimaryAnimalId} />
+              ) : (
+                <>
+                  {recentAnimals.length > 0 && (
+                    <div className="mb-3">
+                      <p className="mb-2 text-xs font-semibold text-stone-400">最近记录</p>
+                      <AnimalPickerList animals={recentAnimals} selectedIds={selectedAnimalIds} primaryId={primaryAnimalId} onToggle={toggleAnimal} onSetPrimary={setPrimaryAnimalId} />
+                    </div>
+                  )}
+                  {frequentAnimals.length > 0 && (
+                    <div className="mb-3">
+                      <p className="mb-2 text-xs font-semibold text-stone-400">常记录</p>
+                      <AnimalPickerList animals={frequentAnimals} selectedIds={selectedAnimalIds} primaryId={primaryAnimalId} onToggle={toggleAnimal} onSetPrimary={setPrimaryAnimalId} />
+                    </div>
+                  )}
                   <button
                     type="button"
-                    onClick={() => toggleAnimal(item.id)}
-                    className="opacity-70 hover:opacity-100"
-                    aria-label={`移除${item.name}`}
+                    className="mt-1 flex items-center gap-1 text-xs font-semibold text-stone-500"
+                    onClick={() => setShowAllAnimals(true)}
                   >
-                    <X size={11} />
+                    <ChevronDown size={13} />
+                    查看全部毛孩
                   </button>
-                </span>
-              ))}
+                </>
+              )}
+
+              {selectedAnimals.length > 1 && (
+                <p className="mt-3 text-xs text-stone-400">
+                  点击已选标签可设为主角 · 当前主角：{primaryAnimal.name}
+                </p>
+              )}
             </div>
-          )}
-
-          {/* Search input */}
-          <div className="mb-3 flex items-center gap-2 rounded-full bg-stone-50 px-3 py-2 text-sm text-stone-500 ring-1 ring-stone-200">
-            <Search size={15} className="shrink-0" />
-            <input
-              className="min-w-0 flex-1 bg-transparent outline-none"
-              value={animalQuery}
-              onChange={(e) => { setAnimalQuery(e.target.value); setShowAllAnimals(false); }}
-              placeholder="搜索名字、毛色、特征"
-            />
           </div>
-
-          {/* Category filters */}
-          <div className="mb-3 flex flex-wrap gap-1.5">
-            {([
-              ["stray_cat", "流浪猫"],
-              ["stray_dog", "流浪狗"],
-              ["pet", "我的宠物"],
-              ["shared", "分享给我的"],
-            ] as const).map(([key, label]) => (
-              <button
-                key={key}
-                type="button"
-                className={`rounded-full px-2.5 py-1 text-[11px] font-semibold ${
-                  categoryFilter === key ? "bg-clay text-white" : "bg-stone-50 text-stone-500 ring-1 ring-stone-200"
-                }`}
-                onClick={() => { setCategoryFilter(categoryFilter === key ? null : key); setShowAllAnimals(false); }}
-              >
-                {label}
-              </button>
-            ))}
-          </div>
-
-          {/* Animal list */}
-          {filteredAnimals !== null ? (
-            <AnimalPickerList animals={filteredAnimals} selectedIds={selectedAnimalIds} primaryId={primaryAnimalId} onToggle={toggleAnimal} onSetPrimary={setPrimaryAnimalId} />
-          ) : showAllAnimals ? (
-            <AnimalPickerList animals={availableAnimals} selectedIds={selectedAnimalIds} primaryId={primaryAnimalId} onToggle={toggleAnimal} onSetPrimary={setPrimaryAnimalId} />
-          ) : (
-            <>
-              {recentAnimals.length > 0 && (
-                <div className="mb-3">
-                  <p className="mb-2 text-xs font-semibold text-stone-400">最近记录</p>
-                  <AnimalPickerList animals={recentAnimals} selectedIds={selectedAnimalIds} primaryId={primaryAnimalId} onToggle={toggleAnimal} onSetPrimary={setPrimaryAnimalId} />
-                </div>
-              )}
-              {frequentAnimals.length > 0 && (
-                <div className="mb-3">
-                  <p className="mb-2 text-xs font-semibold text-stone-400">常记录</p>
-                  <AnimalPickerList animals={frequentAnimals} selectedIds={selectedAnimalIds} primaryId={primaryAnimalId} onToggle={toggleAnimal} onSetPrimary={setPrimaryAnimalId} />
-                </div>
-              )}
-              <button
-                type="button"
-                className="mt-1 flex items-center gap-1 text-xs font-semibold text-stone-500"
-                onClick={() => setShowAllAnimals(true)}
-              >
-                <ChevronDown size={13} />
-                查看全部毛孩
-              </button>
-            </>
-          )}
-
-          {selectedAnimals.length > 1 && (
-            <p className="mt-2 text-xs text-stone-400">
-              点击已选标签可设为主角 · 当前主角：{primaryAnimal.name}
-            </p>
-          )}
-        </div>
+        )}
 
         {/* Type selector */}
         <div className="space-y-3">

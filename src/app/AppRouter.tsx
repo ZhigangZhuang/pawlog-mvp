@@ -7,8 +7,6 @@ import { AnimalDetailPage } from "../pages/AnimalDetailPage";
 import { CatalogPage } from "../pages/CatalogPage";
 import { CreateAnimalPage } from "../pages/CreateAnimalPage";
 import { HomePage } from "../pages/HomePage";
-import { InboxPhotosPage } from "../pages/InboxPhotosPage";
-import { ImportSharePage } from "../pages/ImportSharePage";
 import { MapPage } from "../pages/MapPage";
 import { MergeAnimalPage } from "../pages/MergeAnimalPage";
 import { PostDetailPage } from "../pages/PostDetailPage";
@@ -134,14 +132,6 @@ export function AppRouter({ state, setState, route, setRoute, activeTab, goTabs,
     return <MergeAnimalPage animal={selectedAnimal} state={state} onBack={() => setRoute({ name: "detail", animalId: selectedAnimal.id })} onSave={saveAndReturnToDetail} />;
   }
 
-  if (route.name === "importShare") {
-    return <ImportSharePage state={state} onBack={() => goTabs("profile")} onSave={saveAndReturnToDetail} />;
-  }
-
-  if (route.name === "inbox") {
-    return <InboxPhotosPage state={state} onBack={() => goTabs("home")} onCreateAnimal={() => setRoute({ name: "create" })} onSave={(nextState) => setState(nextState)} />;
-  }
-
   if (activeTab === "home") {
     return <HomePage state={state} onOpenPost={(postId) => openPost(postId, { from: "home" })} />;
   }
@@ -155,7 +145,7 @@ export function AppRouter({ state, setState, route, setRoute, activeTab, goTabs,
   }
 
   if (activeTab === "profile") {
-    return <ProfilePage state={state} onImport={() => setRoute({ name: "importShare" })} onInbox={() => setRoute({ name: "inbox" })} />;
+    return <ProfilePage state={state} />;
   }
 
   return null;

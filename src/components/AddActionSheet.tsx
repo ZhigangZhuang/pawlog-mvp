@@ -1,4 +1,4 @@
-import { Camera, FilePlus2, Images } from "lucide-react";
+import { Camera, FilePlus2 } from "lucide-react";
 import type React from "react";
 
 type AddActionSheetProps = {
@@ -6,10 +6,9 @@ type AddActionSheetProps = {
   onClose: () => void;
   onCreateRecord: () => void;
   onCreateAnimal: () => void;
-  onImportPhotos: () => void;
 };
 
-export function AddActionSheet({ open, onClose, onCreateRecord, onCreateAnimal, onImportPhotos }: AddActionSheetProps) {
+export function AddActionSheet({ open, onClose, onCreateRecord, onCreateAnimal }: AddActionSheetProps) {
   if (!open) return null;
   const runAction = (action: () => void) => {
     onClose();
@@ -35,18 +34,16 @@ export function AddActionSheet({ open, onClose, onCreateRecord, onCreateAnimal, 
         <div className="space-y-2">
           <Action icon={<Camera size={20} />} title="发动态" text="给某只毛孩发一条新动态" onClick={() => runAction(onCreateRecord)} tone="green" />
           <Action icon={<FilePlus2 size={20} />} title="新建毛孩档案" text="记录自家宠物或流浪猫狗" onClick={() => runAction(onCreateAnimal)} tone="orange" />
-          <Action icon={<Images size={20} />} title="导入照片" text="先放进待归档照片箱" onClick={() => runAction(onImportPhotos)} tone="gray" />
         </div>
       </div>
     </div>
   );
 }
 
-function Action({ icon, title, text, tone, onClick }: { icon: React.ReactNode; title: string; text: string; tone: "green" | "orange" | "gray"; onClick: () => void }) {
+function Action({ icon, title, text, tone, onClick }: { icon: React.ReactNode; title: string; text: string; tone: "green" | "orange"; onClick: () => void }) {
   const toneClass = {
     green: "bg-green-50 text-moss",
     orange: "bg-orange-50 text-clay",
-    gray: "bg-stone-100 text-stone-600",
   }[tone];
   return (
     <button type="button" className="flex w-full items-center gap-3 rounded-lg bg-white p-4 text-left ring-1 ring-sand/70" onClick={onClick}>

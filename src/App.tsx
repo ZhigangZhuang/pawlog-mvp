@@ -40,10 +40,6 @@ export default function App() {
           setAddOpen(false);
           setRoute({ name: "create" });
         }}
-        onImportPhotos={() => {
-          setAddOpen(false);
-          setRoute({ name: "inbox" });
-        }}
       />
       {newAnimal ? (
         <NewAnimalToast

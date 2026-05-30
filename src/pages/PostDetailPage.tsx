@@ -34,19 +34,13 @@ export function PostDetailPage({ post, animal, state, onBack, onOpenAnimal }: Po
       canGoBack
       onBack={onBack}
       actions={
-        <div className="relative flex gap-1">
-          <button className="grid h-9 w-9 place-items-center rounded-full bg-white text-stone-700 shadow-sm" onClick={() => setShareOpen((value) => !value)} aria-label="分享动态">
+        <div className="flex gap-1">
+          <button className="grid h-9 w-9 place-items-center rounded-full bg-white text-stone-700 shadow-sm" onClick={() => setShareOpen(true)} aria-label="分享动态">
             <Share2 size={18} />
           </button>
-          <button className="grid h-9 w-9 place-items-center rounded-full bg-white text-stone-700 shadow-sm" onClick={() => setMoreOpen((value) => !value)} aria-label="更多">
+          <button className="grid h-9 w-9 place-items-center rounded-full bg-white text-stone-700 shadow-sm" onClick={() => setMoreOpen(true)} aria-label="更多">
             <MoreHorizontal size={18} />
           </button>
-          {moreOpen ? (
-            <div className="absolute right-0 top-11 z-30 w-36 overflow-hidden rounded-xl bg-white text-sm font-semibold shadow-soft ring-1 ring-sand/70">
-              <button className="block w-full px-3 py-2 text-left">保存动态</button>
-              <button className="block w-full px-3 py-2 text-left">反馈</button>
-            </div>
-          ) : null}
         </div>
       }
     >
@@ -130,21 +124,36 @@ export function PostDetailPage({ post, animal, state, onBack, onOpenAnimal }: Po
           </button>
         </div>
 
-        {shareOpen ? (
-          <div className="rounded-[20px] bg-white p-4 ring-1 ring-sand/70">
-            <div className="mb-3 flex items-center justify-between">
-              <p className="font-bold">分享这条动态</p>
-              <button className="text-sm font-semibold text-stone-500" onClick={() => setShareOpen(false)}>关闭</button>
-            </div>
-            <div className="grid grid-cols-3 gap-2 text-sm font-semibold">
-              <button className="rounded-full bg-stone-100 px-3 py-2">生成分享图</button>
-              <button className="rounded-full bg-stone-100 px-3 py-2">复制链接</button>
-              <button className="rounded-full bg-stone-100 px-3 py-2">发给联系人</button>
-            </div>
-            {isStray ? <p className="mt-3 text-xs leading-5 text-green-800">分享内容已隐藏精确位置、固定出没时间和敏感备注。</p> : null}
-          </div>
-        ) : null}
       </div>
+
+      {/* Share bottom sheet */}
+      {shareOpen && (
+        <BottomSheet onClose={() => setShareOpen(false)}>
+          <p className="mb-3 font-bold">分享这条动态</p>
+          {isStray && <p className="mb-3 text-xs leading-5 text-green-800">分享时将自动隐藏精确位置和敏感信息</p>}
+          <div className="space-y-1">
+            <SheetAction label="生成分享图" onClick={() => setShareOpen(false)} />
+            <SheetAction label="复制链接" onClick={() => setShareOpen(false)} />
+            <SheetAction label="发给联系人" onClick={() => setShareOpen(false)} />
+          </div>
+          <button className="mt-3 w-full rounded-xl bg-stone-100 py-2.5 text-sm font-semibold text-stone-500" onClick={() => setShareOpen(false)}>取消</button>
+        </BottomSheet>
+      )}
+
+      {/* More bottom sheet */}
+      {moreOpen && (
+        <BottomSheet onClose={() => setMoreOpen(false)}>
+          <p className="mb-3 font-bold">更多操作</p>
+          <div className="space-y-1">
+            <SheetAction icon={<Bookmark size={16} />} label="保存动态" onClick={() => setMoreOpen(false)} />
+            <SheetAction icon={<MessageCircle size={16} />} label="编辑动态" onClick={() => setMoreOpen(false)} />
+            <SheetAction icon={<Share2 size={16} />} label="分享" onClick={() => { setMoreOpen(false); setShareOpen(true); }} />
+            <SheetAction label="设为私密" onClick={() => setMoreOpen(false)} />
+            <SheetAction label="删除" onClick={() => setMoreOpen(false)} danger />
+          </div>
+          <button className="mt-3 w-full rounded-xl bg-stone-100 py-2.5 text-sm font-semibold text-stone-500" onClick={() => setMoreOpen(false)}>取消</button>
+        </BottomSheet>
+      )}
     </AppShell>
   );
 }
@@ -192,4 +201,30 @@ function sourceLabel(post: AnimalRecord, animal: Animal) {
 function toRecordType(type: AnimalRecord["type"]) {
   if (type === "adoption" || type === "shared_update") return "note";
   return type;
+}
+
+function BottomSheet({ children, onClose }: { children: React.ReactNode; onClose: () => void }) {
+  return (
+    <div className="fixed inset-0 z-40 bg-black/30" onClick={onClose}>
+      <div
+        className="absolute inset-x-0 bottom-0 mx-auto max-w-md rounded-t-[24px] bg-white p-4 pb-[max(1.5rem,env(safe-area-inset-bottom))] shadow-soft"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="mx-auto mb-3 h-1 w-10 rounded-full bg-stone-300" />
+        {children}
+      </div>
+    </div>
+  );
+}
+
+function SheetAction({ icon, label, onClick, danger }: { icon?: React.ReactNode; label: string; onClick: () => void; danger?: boolean }) {
+  return (
+    <button
+      className={`flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left text-sm font-semibold active:bg-stone-50 ${danger ? "text-rose" : "text-ink"}`}
+      onClick={onClick}
+    >
+      {icon && <span className="text-stone-400">{icon}</span>}
+      {label}
+    </button>
+  );
 }
