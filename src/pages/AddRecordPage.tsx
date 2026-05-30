@@ -38,6 +38,7 @@ export function AddRecordPage({ animal, state, initialType, onBack, onSave }: Ad
   // Animal picker state
   const [animalQuery, setAnimalQuery] = useState("");
   const [showAllAnimals, setShowAllAnimals] = useState(false);
+  const [categoryFilter, setCategoryFilter] = useState<string | null>(null);
 
   useEffect(() => {
     if (!allowedTypes.includes(type)) setType(allowedTypes[0]);
@@ -72,9 +73,15 @@ export function AddRecordPage({ animal, state, initialType, onBack, onSave }: Ad
   }, [availableAnimals, state.feedRecords]);
 
   const filteredAnimals = useMemo(() => {
-    if (!animalQuery) return null;
-    return availableAnimals.filter((a) => `${a.name}${a.color || ""}${a.features || ""}`.includes(animalQuery));
-  }, [animalQuery, availableAnimals]);
+    if (!animalQuery && !categoryFilter) return null;
+    let list = availableAnimals;
+    if (categoryFilter === "stray_cat") list = list.filter((a) => a.animal_origin === "stray" && a.species === "cat");
+    else if (categoryFilter === "stray_dog") list = list.filter((a) => a.animal_origin === "stray" && a.species === "dog");
+    else if (categoryFilter === "pet") list = list.filter((a) => a.animal_origin === "owned_pet" && a.animal_source !== "shared_to_me");
+    else if (categoryFilter === "shared") list = list.filter((a) => a.animal_source === "shared_to_me");
+    if (animalQuery) list = list.filter((a) => `${a.name}${a.color || ""}${a.features || ""}`.includes(animalQuery));
+    return list;
+  }, [animalQuery, categoryFilter, availableAnimals]);
 
   const title = useMemo(() => {
     if (type === "weight" && weight) return `体重更新：${weight}kg`;
@@ -301,6 +308,27 @@ export function AddRecordPage({ animal, state, initialType, onBack, onSave }: Ad
               onChange={(e) => { setAnimalQuery(e.target.value); setShowAllAnimals(false); }}
               placeholder="搜索名字、毛色、特征"
             />
+          </div>
+
+          {/* Category filters */}
+          <div className="mb-3 flex flex-wrap gap-1.5">
+            {([
+              ["stray_cat", "流浪猫"],
+              ["stray_dog", "流浪狗"],
+              ["pet", "我的宠物"],
+              ["shared", "分享给我的"],
+            ] as const).map(([key, label]) => (
+              <button
+                key={key}
+                type="button"
+                className={`rounded-full px-2.5 py-1 text-[11px] font-semibold ${
+                  categoryFilter === key ? "bg-clay text-white" : "bg-stone-50 text-stone-500 ring-1 ring-stone-200"
+                }`}
+                onClick={() => { setCategoryFilter(categoryFilter === key ? null : key); setShowAllAnimals(false); }}
+              >
+                {label}
+              </button>
+            ))}
           </div>
 
           {/* Animal list */}
