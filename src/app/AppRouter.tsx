@@ -13,7 +13,6 @@ import { MapPage } from "../pages/MapPage";
 import { MergeAnimalPage } from "../pages/MergeAnimalPage";
 import { PostDetailPage } from "../pages/PostDetailPage";
 import { ProfilePage } from "../pages/ProfilePage";
-import { SelectAnimalPage } from "../pages/SelectAnimalPage";
 import { ShareCardPage } from "../pages/ShareCardPage";
 import type { Animal, AppState, BottomTab } from "../types";
 import { activeAnimals, primaryAnimalIdForRecord, withChangeLog } from "../utils/storage";
@@ -72,17 +71,6 @@ export function AppRouter({ state, setState, route, setRoute, activeTab, goTabs,
           setNewAnimal(animal);
           setRoute({ name: "tabs" });
         }}
-      />
-    );
-  }
-
-  if (route.name === "selectAnimal") {
-    return (
-      <SelectAnimalPage
-        state={state}
-        recordType={route.type}
-        onBack={() => goTabs()}
-        onSelect={(animalId) => setRoute({ name: "addRecord", animalId, type: route.type })}
       />
     );
   }

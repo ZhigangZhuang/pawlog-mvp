@@ -12,7 +12,6 @@ export type Route =
   | { name: "post"; postId: string; source?: RouteSource }
   | { name: "create" }
   | { name: "detail"; animalId: string; source?: RouteSource }
-  | { name: "selectAnimal"; type: RecordType }
   | { name: "addRecord"; animalId: string; type?: RecordType; source?: RouteSource }
   | { name: "share"; animalId: string }
   | { name: "merge"; animalId: string }

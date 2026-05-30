@@ -52,9 +52,9 @@ export function PostDetailPage({ post, animal, state, onBack, onOpenAnimal }: Po
     >
       <div className="space-y-4 pb-24">
         <section className="rounded-[20px] bg-white ring-1 ring-sand/70">
-          <button className="flex w-full items-start gap-3 p-4 text-left" onClick={() => onOpenAnimal(primaryAnimal.id)}>
+          <div className="flex items-start gap-3 p-4">
             <img className="h-12 w-12 rounded-full object-cover" src={primaryAnimal.cover_image_url} alt={primaryAnimal.name} />
-            <span className="min-w-0 flex-1">
+            <div className="min-w-0 flex-1">
               <span className="block font-bold">{title}</span>
               <span className="mt-0.5 block text-xs text-stone-500">
                 {formatDate(post.occurred_at)}
@@ -65,8 +65,11 @@ export function PostDetailPage({ post, animal, state, onBack, onOpenAnimal }: Po
                   <TinyTag key={tag}>{tag}</TinyTag>
                 ))}
               </span>
-            </span>
-          </button>
+              <button className="mt-2 text-xs font-semibold text-clay" onClick={() => onOpenAnimal(primaryAnimal.id)}>
+                查看毛孩主页 →
+              </button>
+            </div>
+          </div>
 
           <PostImages images={post.images.length ? post.images : primaryAnimal.cover_image_url ? [primaryAnimal.cover_image_url] : []} animalName={primaryAnimal.name} />
 
