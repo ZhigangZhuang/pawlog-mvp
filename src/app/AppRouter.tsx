@@ -155,7 +155,7 @@ export function AppRouter({ state, setState, route, setRoute, activeTab, goTabs,
   }
 
   if (activeTab === "home") {
-    return <HomePage state={state} onOpenPost={(postId) => openPost(postId, { from: "home" })} />;
+    return <HomePage state={state} onOpenPost={(postId) => openPost(postId, { from: "home" })} onOpenAnimal={(animalId) => openAnimal(animalId, { from: "home" })} />;
   }
 
   if (activeTab === "map") {

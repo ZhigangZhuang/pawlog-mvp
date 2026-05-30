@@ -86,31 +86,29 @@ export function PostDetailPage({ post, animal, state, onBack, onOpenAnimal }: Po
               </div>
             ) : null}
 
-            <div className="rounded-2xl bg-white p-3 ring-1 ring-sand/70">
-              <div className="mb-3 flex items-center justify-between gap-3">
-                <p className="text-sm font-bold text-stone-600">这条动态里的毛孩</p>
-                <span className="shrink-0 rounded-full bg-orange-50 px-2 py-1 text-xs font-bold text-clay">{displayedAnimals.length} 只</span>
+            {displayedAnimals.length >= 2 && (
+              <div className="rounded-2xl bg-white p-3 ring-1 ring-sand/70">
+                <div className="mb-3 flex items-center justify-between gap-3">
+                  <p className="text-sm font-bold text-stone-600">这条动态里的毛孩</p>
+                  <span className="shrink-0 rounded-full bg-orange-50 px-2 py-1 text-xs font-bold text-clay">{displayedAnimals.length} 只</span>
+                </div>
+                <div className="flex gap-3 overflow-x-auto pb-1">
+                  {displayedAnimals.map((item) => {
+                    const role = item.id === primaryAnimal.id ? "main" : roleByAnimalId.get(item.id);
+                    return (
+                      <button key={item.id} className="w-20 shrink-0 text-center" onClick={() => onOpenAnimal(item.id)}>
+                        <span className="relative mx-auto block h-14 w-14">
+                          <img className="h-14 w-14 rounded-full object-cover ring-2 ring-white" src={item.cover_image_url} alt={item.name} />
+                          {role === "main" ? <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 rounded-full bg-clay px-1.5 py-0.5 text-[10px] font-bold text-white">主角</span> : null}
+                        </span>
+                        <span className="mt-2 block truncate text-xs font-bold text-stone-700">{item.name}</span>
+                        <span className="mt-0.5 block truncate text-[11px] text-stone-500">{roleLabel(role)}</span>
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
-              <div className="flex gap-3 overflow-x-auto pb-1">
-                {displayedAnimals.map((item) => {
-                  const role = item.id === primaryAnimal.id ? "main" : roleByAnimalId.get(item.id);
-                  return (
-                    <button key={item.id} className="w-20 shrink-0 text-center" onClick={() => onOpenAnimal(item.id)}>
-                      <span className="relative mx-auto block h-14 w-14">
-                        <img className="h-14 w-14 rounded-full object-cover ring-2 ring-white" src={item.cover_image_url} alt={item.name} />
-                        {role === "main" ? <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 rounded-full bg-clay px-1.5 py-0.5 text-[10px] font-bold text-white">主角</span> : null}
-                      </span>
-                      <span className="mt-2 block truncate text-xs font-bold text-stone-700">{item.name}</span>
-                      <span className="mt-0.5 block truncate text-[11px] text-stone-500">{roleLabel(role)}</span>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            <button className="text-sm font-bold text-clay" onClick={() => onOpenAnimal(primaryAnimal.id)}>
-              查看 {primaryAnimal.name} 的全部动态 →
-            </button>
+            )}
           </div>
         </section>
 
